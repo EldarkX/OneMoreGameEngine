@@ -1,5 +1,7 @@
 #include "../inc/arcanoid.h"
 #include "../inc/moveableObject.h"
+#include "../inc/collisions.h"
+#include "../inc/Ball.h"
 
 #include <ctime>
 
@@ -24,11 +26,15 @@ void Game::PreInit()
       _window_height, 0);
 
     Game::_renderer = SDL_CreateRenderer(_window, 1, SDL_RENDERER_ACCELERATED);
+
+	IMG_Init(IMG_INIT_PNG);
 }
 
 void Game::Init()
 {
-	IMG_Init(IMG_INIT_PNG);
+	collisionManager = new CollisionManager();
+
+	//Create player
 
 	SDL_Texture* playerTexture = IMG_LoadTexture(Game::_renderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\player.png");
 
@@ -38,9 +44,29 @@ void Game::Init()
 	int playerWidth = 80, playerHeight = 10;
 
 	player = new MoveableObject(playerTexture,
-	Vec2D(_window_width / 2 - playerWidth / 2,
-		  _window_height - playerHeight),
+	Vec2D(_window_width / 2 - playerWidth / 2, _window_height - playerHeight), "Player",
 	Vec2D(playerWidth, playerHeight));
+
+	//Create ball
+
+	collisionManager->AddActiveAgent(player);
+	collisionManager->AddAgent(player);
+
+	SDL_Texture* ballTexture = IMG_LoadTexture(Game::_renderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\ball.png");
+
+	if (!ballTexture)
+		cout << IMG_GetError() << endl;
+
+	int ballWidth = 16, ballHeight = 16;
+
+	ball = new Ball(ballTexture,
+		Vec2D(_window_width / 2 - ballWidth / 2, _window_height - playerHeight - ballHeight - 1), "Ball",
+		Vec2D(ballWidth, ballHeight));
+
+	ball->SetVelocity(Vec2D(0, -1));
+
+	collisionManager->AddActiveAgent(ball);
+	collisionManager->AddAgent(ball);
 
 	LoadLevel("tmp");
 }
@@ -58,12 +84,31 @@ void Game::Tick()
 		{
 			handleInput(&event);
 		}
+
+		SDL_SetRenderDrawColor(Game::_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+
 		SDL_RenderClear(Game::_renderer);
 
+		collisionManager->CheckAllCollisions();
+
 		player->Tick();
+
+		ball->Tick();
       
 		for (auto &block : blocks)
 			block->Tick();
+
+		if (DEBUG_COLLISIONS)
+		{
+			SDL_SetRenderDrawColor(Game::_renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+
+			SDL_RenderDrawLine(Game::_renderer, ball->GetLeftUpCorner().X(), ball->GetLeftUpCorner().Y(), ball->GetRightBottomCorner().X(), ball->GetRightBottomCorner().Y());
+
+			SDL_RenderDrawLine(Game::_renderer, player->GetLeftUpCorner().X(), player->GetLeftUpCorner().Y(), player->GetRightBottomCorner().X(), player->GetRightBottomCorner().Y());
+
+			for (auto& block : blocks)
+				SDL_RenderDrawLine(Game::_renderer, block->GetLeftUpCorner().X(), block->GetLeftUpCorner().Y(), block->GetRightBottomCorner().X(), block->GetRightBottomCorner().Y());
+		}
 
 		SDL_RenderPresent(Game::_renderer);
 
@@ -105,6 +150,11 @@ Game *Game::GetInstance()
   return _game;
 }
 
+void Game::RemoveBlock(class Object* Block)
+{
+	blocks.erase(find(blocks.cbegin(), blocks.cend(), Block));
+}
+
 void Game::LoadLevel(string path)
 {
 
@@ -115,29 +165,34 @@ void Game::LoadLevel(string path)
 
 	vector<string> level;
 
-	int blocksInRow = 12;
-	int rows = 8;
+	int blocksInRow = 14;
+	int rows = 5;
 
-	int offsetW = _window_width / 8;
-	int offsetH = _window_height / 10;
+	double offsetW = _window_width / 8;
+	double offsetH = _window_height / 10;
 
-	int gapW = 10;
-	int gapH = 10;
+	double gapW = 10;
+	double gapH = 10;
 
-	int blockWidth = (_window_width - offsetW * 2 - gapW * blocksInRow)
+	double blockWidth = (_window_width - offsetW * 2 - gapW * blocksInRow)
                     / blocksInRow;
 
-	int blockHeight = (_window_height - offsetH - _window_height * 0.6
-                    - gapH * rows) / rows;  
+	double blockHeight = (_window_height - offsetH - _window_height * 0.6
+                    - gapH * rows) / rows;
 
 	for (int row = 0; row < rows; ++row)
 	{
 		for (int col = 0; col < blocksInRow; ++col)
 		{
-			blocks.push_back(new Object(blockTexture,
-				Vec2D(offsetW + blockWidth * col + gapW * col,
-				offsetH + blockHeight * row + gapH * row),
-				Vec2D(blockWidth, blockHeight)));
+			Object* newBlock = new Object(
+				blockTexture,
+				Vec2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row), "Block " + to_string(row * blocksInRow + col),
+				Vec2D(blockWidth, blockHeight)
+			);
+			newBlock->SetCollisionType(ECollisionType::CTE_Block);
+			blocks.push_back(newBlock);
+			collisionManager->AddAgent(newBlock);
+
 		}
 	}
 }

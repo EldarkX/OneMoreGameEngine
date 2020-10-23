@@ -15,6 +15,10 @@ using std::endl;
 using std::vector;
 using std::string;
 
+using std::to_string;
+
+#define  DEBUG_COLLISIONS 0
+
 enum class EGameStatus
 {
     GSE_Game,
@@ -48,6 +52,8 @@ public:
     inline static EGameStatus gameStatus;
     inline static float DeltaTime = (float)1 / 60000;
 
+	void RemoveBlock(class Object* Block);
+
 private:
 
     inline static Game             *_game;
@@ -63,5 +69,7 @@ private:
     vector<class Object *>			blocks;
     class MoveableObject            *player;
     class MoveableObject            *ball;
+
+	class CollisionManager			*collisionManager;
 
 };
