@@ -29,3 +29,8 @@ Vec2D operator+(const Vec2D &v1, const Vec2D &v2)
 {
     return (Vec2D(v1.X() + v2.X(), v1.Y() + v2.Y()));
 }
+
+Vec2D operator+(const Vec2D &v1, const Vec2D &v2)
+{
+    return (Vec2D(v1.X() - v2.X(), v1.Y() - v2.Y()));
+}

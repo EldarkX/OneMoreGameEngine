@@ -2,6 +2,7 @@
 
 #include "arcanoid.h"
 #include "vec2d.h"
+#include "collisions.h"
 
 class Object
 {
@@ -24,8 +25,12 @@ protected:
 
 	virtual void Render(SDL_Renderer *Renderer);
 
+	void RecalculateCorners();
+
 	Vec2D			_position;
 	Vec2D			_size;
+	Vec2D			_leftUp;
+	Vec2D			_rightBottom;
 	SDL_Texture		*_texture;
 
 };

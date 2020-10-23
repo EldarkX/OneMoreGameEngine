@@ -30,3 +30,4 @@ private:
 
 Vec2D operator*(const Vec2D &v, float scalar);
 Vec2D operator+(const Vec2D &v1, const Vec2D &v2);
+Vec2D operator-(const Vec2D &v1, const Vec2D &v2);

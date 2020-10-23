@@ -13,6 +13,8 @@ Object::Object(SDL_Texture *texture, Vec2D initialPosition)
 
 	_size.X() = w;
 	_size.Y() = h;
+
+    RecalculateCorners();
 };
 
 Object::Object(SDL_Texture *texture, Vec2D initialPosition,
@@ -54,10 +56,20 @@ void Object::SetPosition(Vec2D newPosition)
 {
     _position.X() = newPosition.X();
     _position.Y() = newPosition.Y();
+
+    RecalculateCorners();
 }
 
 void Object::SetSize(Vec2D newSize)
 {
     _size.X() = newSize.X();
     _size.Y() = newSize.Y();
+
+    RecalculateCorners();
+}
+
+void Object::RecalculateCorners()
+{
+    _leftUp = _position - _size;
+    _rightBottom = _position + _size;
 }
