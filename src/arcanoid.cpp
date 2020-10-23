@@ -7,10 +7,10 @@ Game::Game(int window_width, int window_height)
       : _window_width(window_width),
         _window_height(window_height)
 {
-  if (Game::_game)
-    delete this;
+	if (Game::_game)
+		delete this;
   
-  Game::_game = this;
+	Game::_game = this;
 };
 
 void Game::PreInit()
@@ -28,20 +28,21 @@ void Game::PreInit()
 
 void Game::Init()
 {
-  SDL_Texture *playerTexture = IMG_LoadTexture(Game::_renderer,
-    "/Users/polinayevtushok/Andrey/assets/images/player.png");
-  
-  if (!playerTexture)
-    cout << "Error: can't load player texture!" << endl;
+	IMG_Init(IMG_INIT_PNG);
 
-  int playerWidth = 80, playerHeight = 10;
+	SDL_Texture* playerTexture = IMG_LoadTexture(Game::_renderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\player.png");
 
-  player = new MoveableObject(playerTexture,
-    Vec2D(_window_width / 2 - playerWidth / 2,
-      _window_height - playerHeight),
-    Vec2D(playerWidth, playerHeight));
+	if (!playerTexture)
+		cout << IMG_GetError() << endl;
 
-  LoadLevel("tmp");
+	int playerWidth = 80, playerHeight = 10;
+
+	player = new MoveableObject(playerTexture,
+	Vec2D(_window_width / 2 - playerWidth / 2,
+		  _window_height - playerHeight),
+	Vec2D(playerWidth, playerHeight));
+
+	LoadLevel("tmp");
 }
 
 void Game::Tick()
@@ -51,31 +52,31 @@ void Game::Tick()
 
     while (Game::gameStatus == EGameStatus::GSE_Game)
     {
-      nbFrames++;
+		nbFrames++;
 
-      if (SDL_PollEvent(&event))
-      {
-        handleInput(&event);
-      }
-      SDL_RenderClear(Game::_renderer);
+		if (SDL_PollEvent(&event))
+		{
+			handleInput(&event);
+		}
+		SDL_RenderClear(Game::_renderer);
 
-      player->Tick();
+		player->Tick();
       
-      for (auto &block : blocks)
-        block->Tick();
+		for (auto &block : blocks)
+			block->Tick();
 
-      SDL_RenderPresent(Game::_renderer);
+		SDL_RenderPresent(Game::_renderer);
 
-      if (time(NULL) - seconds >= 1)
-      {
-        Game::DeltaTime = (float)(time(NULL) - seconds) / nbFrames;
-        seconds = time(NULL);
+		if (time(NULL) - seconds >= 1)
+		{
+			Game::DeltaTime = (float)(time(NULL) - seconds) / nbFrames;
+			seconds = time(NULL);
 
-        //cout << "FPS = " << nbFrames << endl;
-        cout << "DeltaTime = " << Game::DeltaTime << endl;
+			//cout << "FPS = " << nbFrames << endl;
+			cout << "DeltaTime = " << Game::DeltaTime << endl;
 
-        nbFrames = 0;
-      }
+			nbFrames = 0;
+		}
     }
 }
 
@@ -106,37 +107,37 @@ Game *Game::GetInstance()
 
 void Game::LoadLevel(string path)
 {
-  SDL_Texture *blockTexture = IMG_LoadTexture(Game::_renderer,
-    "/Users/polinayevtushok/Andrey/assets/images/block.png");
 
-  if (!blockTexture)
-    cout << "Error: can't load player texture!" << endl;
+	SDL_Texture* blockTexture = IMG_LoadTexture(Game::_renderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\block.png");
 
-  vector<string> level;
+	if (!blockTexture)
+    cout << "Error: can't load block texture!" << endl;
 
-  int blocksInRow = 12;
-  int rows = 8;
+	vector<string> level;
 
-  int offsetW = _window_width / 8;
-  int offsetH = _window_height / 10;
+	int blocksInRow = 12;
+	int rows = 8;
 
-  int gapW = 10;
-  int gapH = 10;
+	int offsetW = _window_width / 8;
+	int offsetH = _window_height / 10;
 
-  int blockWidth = (_window_width - offsetW * 2 - gapW * blocksInRow)
+	int gapW = 10;
+	int gapH = 10;
+
+	int blockWidth = (_window_width - offsetW * 2 - gapW * blocksInRow)
                     / blocksInRow;
 
-  int blockHeight = (_window_height - offsetH - _window_height * 0.6
+	int blockHeight = (_window_height - offsetH - _window_height * 0.6
                     - gapH * rows) / rows;  
 
-  for (int row = 0; row < rows; ++row)
-  {
-    for (int col = 0; col < blocksInRow; ++col)
-    {
-      blocks.push_back(new Object(blockTexture,
-        Vec2D(offsetW + blockWidth * col + gapW * col,
-          offsetH + blockHeight * row + gapH * row),
-        Vec2D(blockWidth, blockHeight)));
-    }
-  }
+	for (int row = 0; row < rows; ++row)
+	{
+		for (int col = 0; col < blocksInRow; ++col)
+		{
+			blocks.push_back(new Object(blockTexture,
+				Vec2D(offsetW + blockWidth * col + gapW * col,
+				offsetH + blockHeight * row + gapH * row),
+				Vec2D(blockWidth, blockHeight)));
+		}
+	}
 }

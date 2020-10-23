@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 #include <iostream>
 #include <vector>
@@ -60,7 +60,7 @@ private:
     int                     _window_width;
     int                     _window_height;
 
-    vector<class Object *>  blocks;
+    vector<class Object *>			blocks;
     class MoveableObject            *player;
     class MoveableObject            *ball;
 
