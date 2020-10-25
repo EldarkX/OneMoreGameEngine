@@ -47,6 +47,8 @@ void Game::Init()
 	Vec2D(_window_width / 2 - playerWidth / 2, _window_height - playerHeight), "Player",
 	Vec2D(playerWidth, playerHeight));
 
+	player->SetCollisionType(ECollisionType::CTE_Player);
+
 	//Create ball
 
 	collisionManager->AddActiveAgent(player);
@@ -157,7 +159,6 @@ void Game::RemoveBlock(class Object* Block)
 
 void Game::LoadLevel(string path)
 {
-
 	SDL_Texture* blockTexture = IMG_LoadTexture(Game::_renderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\block.png");
 
 	if (!blockTexture)
@@ -195,4 +196,16 @@ void Game::LoadLevel(string path)
 
 		}
 	}
+
+	Object* leftWall = new Object(NULL, Vec2D(0, 0), "Left wall", Vec2D(1, _window_height));
+	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
+	collisionManager->AddAgent(leftWall);
+
+	Object* rightWall = new Object(NULL, Vec2D(_window_width - 1., 0), "Right wall", Vec2D(1, _window_height));
+	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
+	collisionManager->AddAgent(rightWall);
+
+	Object* topWall = new Object(NULL, Vec2D(0, 0), "Top wall", Vec2D(_window_width, 1));
+	topWall->SetCollisionType(ECollisionType::CTE_Wall);
+	collisionManager->AddAgent(topWall);
 }

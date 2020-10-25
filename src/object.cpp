@@ -33,6 +33,12 @@ Object::Object(SDL_Texture *texture, Vec2D initialPosition, string ObjectName,
 
 void Object::Tick()
 {
+	if (isPendingToKill)
+	{
+		Destroy();
+		return;
+	}
+
     Render(Game::GetRenderer());
 }
 
@@ -106,7 +112,10 @@ void Object::SetCollisionType(ECollisionType newCollisionType)
 
 void Object::Destroy()
 {
-	
+	if (collisionType_ == ECollisionType::CTE_Block)
+		Game::GetInstance()->RemoveBlock(this);
+
+	delete this;
 }
 
 void Object::RecalculateCorners()

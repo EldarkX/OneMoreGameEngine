@@ -4,12 +4,13 @@ MoveableObject::MoveableObject(SDL_Texture *texture,
         Vec2D initialPosition, string ObjectName, Vec2D customSize)
         : Object(texture, initialPosition, ObjectName, customSize)
 {
-    _speed = 80;
+    _speed = 250;
 }
 
 void MoveableObject::Tick()
 {
-    Render(Game::GetRenderer());
+	Object::Tick();
+
     Movement();
 }
 

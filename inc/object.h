@@ -33,6 +33,8 @@ public:
 
 	virtual void Destroy();
 
+	bool isPendingToKill = false;
+
 protected:
 
 	virtual void Render(SDL_Renderer *Renderer);
