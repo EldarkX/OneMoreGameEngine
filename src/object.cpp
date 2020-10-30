@@ -1,10 +1,10 @@
 #include "../inc/object.h"
-#include "../inc/vec2d.h"
+#include "../inc/Vector2D.h"
 #include "../inc/arcanoid.h"
 
 #include <iostream>
 
-Object::Object(SDL_Texture *texture, Vec2D initialPosition, string ObjectName)
+Object::Object(SDL_Texture *texture, Vector2D initialPosition, string ObjectName)
     : _position(initialPosition), _texture(texture)
 {
 	int w, h;
@@ -21,8 +21,8 @@ Object::Object(SDL_Texture *texture, Vec2D initialPosition, string ObjectName)
     RecalculateCorners();
 };
 
-Object::Object(SDL_Texture *texture, Vec2D initialPosition, string ObjectName,
-    Vec2D customSize)
+Object::Object(SDL_Texture *texture, Vector2D initialPosition, string ObjectName,
+    Vector2D customSize)
     : Object(texture, initialPosition, ObjectName)
 {
 	_size.X() = customSize.X();
@@ -42,7 +42,7 @@ void Object::Tick()
     Render(Game::GetRenderer());
 }
 
-void Object::OnCollision(class Object* AnotherObject, class Vec2D& point)
+void Object::OnCollision(class Object* AnotherObject, class Vector2D& point)
 {
 
 }
@@ -59,17 +59,17 @@ void Object::Render(SDL_Renderer *renderer)
     SDL_RenderCopy(renderer, _texture, NULL, &info);
 }
 
-Vec2D Object::GetPosition() const
+Vector2D Object::GetPosition() const
 {
     return _position;
 }
 
-Vec2D Object::GetSize() const
+Vector2D Object::GetSize() const
 {
     return _size;
 }
 
-void Object::SetPosition(Vec2D newPosition)
+void Object::SetPosition(Vector2D newPosition)
 {
     _position.X() = newPosition.X();
     _position.Y() = newPosition.Y();
@@ -77,7 +77,7 @@ void Object::SetPosition(Vec2D newPosition)
     RecalculateCorners();
 }
 
-void Object::SetSize(Vec2D newSize)
+void Object::SetSize(Vector2D newSize)
 {
     _size.X() = newSize.X();
     _size.Y() = newSize.Y();
@@ -85,12 +85,12 @@ void Object::SetSize(Vec2D newSize)
     RecalculateCorners();
 }
 
-Vec2D Object::GetLeftUpCorner() const
+Vector2D Object::GetLeftUpCorner() const
 {
 	return _leftUp;
 }
 
-Vec2D Object::GetRightBottomCorner() const
+Vector2D Object::GetRightBottomCorner() const
 {
 	return _rightBottom;
 }

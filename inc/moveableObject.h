@@ -1,7 +1,7 @@
 #pragma once
 
 #include "object.h"
-#include "vec2d.h"
+#include "Vector2D.h"
 
 class MoveableObject : public Object
 {
@@ -9,21 +9,21 @@ class MoveableObject : public Object
 public:
 
     MoveableObject(SDL_Texture *texture, 
-        Vec2D initialPosition, string ObjectName, Vec2D customSize);
+        Vector2D initialPosition, string ObjectName, Vector2D customSize);
 
-    virtual void Tick() override;
+    virtual void		Tick() override;
 
-    float   GetSpeed() const { return _speed; } ;
-    void    SetSpeed(float newSpeed);
+    float				GetSpeed() const { return _speed; } ;
+    void				SetSpeed(float newSpeed);
 
-    inline Vec2D   GetVelocity() const { return _velocity; } ;
-	void    SetVelocity(Vec2D newVelocity) {_velocity = newVelocity;};
+    inline Vector2D		GetVelocity() const { return _velocity; } ;
+	void				SetVelocity(Vector2D newVelocity) {_velocity = newVelocity;};
 
 protected:
 
-    void Movement();
+    virtual void		Movement();
 
-    float _speed;
-    Vec2D _velocity;
+    float				_speed;
+    Vector2D			_velocity;
 
 };

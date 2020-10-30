@@ -7,8 +7,13 @@ class Ball : public MoveableObject
 public:
 
 	Ball(SDL_Texture* texture,
-		Vec2D initialPosition, string ObjectName, Vec2D customSize);
+		Vector2D initialPosition, string ObjectName, Vector2D customSize);
 
-	virtual void OnCollision(class Object* AnotherObject, class Vec2D& point) override;
+	virtual void OnCollision(class Object* AnotherObject, class Vector2D& point) override;
+
+protected:
+
+	virtual void Movement() override;
+
 };
 

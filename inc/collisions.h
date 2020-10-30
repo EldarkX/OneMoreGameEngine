@@ -21,7 +21,7 @@ class CollisionManager
 
     private:
 
-		bool AreCollided(Object *Obj1, Object *Obj2, class Vec2D*point);
+		bool AreCollided(Object *Obj1, Object *Obj2, class Vector2D*point);
 
         vector<Object *> Agents;
         vector<Object *> ActiveAgents;

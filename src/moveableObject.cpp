@@ -1,10 +1,10 @@
 #include "../inc/moveableObject.h"
 
 MoveableObject::MoveableObject(SDL_Texture *texture, 
-        Vec2D initialPosition, string ObjectName, Vec2D customSize)
+        Vector2D initialPosition, string ObjectName, Vector2D customSize)
         : Object(texture, initialPosition, ObjectName, customSize)
 {
-    _speed = 250;
+    _speed = 270;
 }
 
 void MoveableObject::Tick()
@@ -22,5 +22,5 @@ void MoveableObject::SetSpeed(float newSpeed)
 void MoveableObject::Movement()
 {
     SetPosition(GetPosition() +
-        Vec2D(_velocity * _speed * Game::DeltaTime));
+        Vector2D(_velocity * _speed * Game::DeltaTime));
 }

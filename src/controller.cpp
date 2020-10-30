@@ -12,16 +12,16 @@ void    handleInput(const SDL_Event *event)
         || event->key.keysym.sym == SDL_KeyCode::SDLK_d)
     {
         if (event->type == SDL_KEYDOWN)
-            Game::GetInstance()->GetPlayer()->SetVelocity(Vec2D(1, 0));
+            Game::GetInstance()->GetPlayer()->SetVelocity(Vector2D(1, 0));
         else
-            Game::GetInstance()->GetPlayer()->SetVelocity(Vec2D(0, 0));
+            Game::GetInstance()->GetPlayer()->SetVelocity(Vector2D(0, 0));
     }
     else if (event->key.keysym.sym == SDL_KeyCode::SDLK_LEFT
         || event->key.keysym.sym == SDL_KeyCode::SDLK_a)
     {
         if (event->type == SDL_KEYDOWN)
-            Game::GetInstance()->GetPlayer()->SetVelocity(Vec2D(-1, 0));
+            Game::GetInstance()->GetPlayer()->SetVelocity(Vector2D(-1, 0));
         else
-            Game::GetInstance()->GetPlayer()->SetVelocity(Vec2D(0, 0));
+            Game::GetInstance()->GetPlayer()->SetVelocity(Vector2D(0, 0));
     }
 }

@@ -3,7 +3,7 @@
 #include "../inc/collisions.h"
 #include "../inc/Ball.h"
 
-#include <ctime>
+#include <algorithm>
 
 Game::Game(int window_width, int window_height)
       : _window_width(window_width),
@@ -44,8 +44,8 @@ void Game::Init()
 	int playerWidth = 80, playerHeight = 10;
 
 	player = new MoveableObject(playerTexture,
-	Vec2D(_window_width / 2 - playerWidth / 2, _window_height - playerHeight), "Player",
-	Vec2D(playerWidth, playerHeight));
+	Vector2D(_window_width / 2 - playerWidth / 2, _window_height - playerHeight), "Player",
+	Vector2D(playerWidth, playerHeight));
 
 	player->SetCollisionType(ECollisionType::CTE_Player);
 
@@ -62,10 +62,10 @@ void Game::Init()
 	int ballWidth = 16, ballHeight = 16;
 
 	ball = new Ball(ballTexture,
-		Vec2D(_window_width / 2 - ballWidth / 2, _window_height - playerHeight - ballHeight - 1), "Ball",
-		Vec2D(ballWidth, ballHeight));
+		Vector2D(_window_width / 2 - ballWidth / 2, _window_height - playerHeight - ballHeight - 1), "Ball",
+		Vector2D(ballWidth, ballHeight));
 
-	ball->SetVelocity(Vec2D(0, -1));
+	ball->SetVelocity(Vector2D(0, -1));
 
 	collisionManager->AddActiveAgent(ball);
 	collisionManager->AddAgent(ball);
@@ -75,24 +75,47 @@ void Game::Init()
 
 void Game::Tick()
 {
-    time_t        seconds = time(NULL);
-    unsigned int  nbFrames = 0; 
+    auto			mTicksCount = SDL_GetTicks();
+	auto			second = 0.;
 
-    while (Game::gameStatus == EGameStatus::GSE_Game)
+    unsigned int	nbFrames = 0; 
+
+    while (gameStatus == EGameStatus::GSE_Game)
     {
-		nbFrames++;
+		// DELTA TIME CALCULATION
+		while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 7));
+		DeltaTime = (SDL_GetTicks() - mTicksCount) / 1000.f;
+		DeltaTime = DeltaTime > 0.05 ? 0.05 : DeltaTime;
+		mTicksCount = SDL_GetTicks();
 
+		if (SHOW_FPS)
+		{
+			nbFrames++;
+
+			second += DeltaTime;
+
+			if (second >= 1)
+			{
+				second = 0.;
+				cout << "FPS: " << nbFrames << endl;
+				nbFrames = 0;
+			}
+		}
+
+	    // INPUT HANDLE
 		if (SDL_PollEvent(&event))
 		{
 			handleInput(&event);
 		}
 
-		SDL_SetRenderDrawColor(Game::_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+		//BACK BUFFER RESET
+		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+		SDL_RenderClear(_renderer);
 
-		SDL_RenderClear(Game::_renderer);
-
+		//COLLISION HANDLE
 		collisionManager->CheckAllCollisions();
 
+		//OBJECTS UPDATE
 		player->Tick();
 
 		ball->Tick();
@@ -102,28 +125,18 @@ void Game::Tick()
 
 		if (DEBUG_COLLISIONS)
 		{
-			SDL_SetRenderDrawColor(Game::_renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+			SDL_SetRenderDrawColor(_renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
-			SDL_RenderDrawLine(Game::_renderer, ball->GetLeftUpCorner().X(), ball->GetLeftUpCorner().Y(), ball->GetRightBottomCorner().X(), ball->GetRightBottomCorner().Y());
+			SDL_RenderDrawLine(_renderer, ball->GetLeftUpCorner().X(), ball->GetLeftUpCorner().Y(), ball->GetRightBottomCorner().X(), ball->GetRightBottomCorner().Y());
 
-			SDL_RenderDrawLine(Game::_renderer, player->GetLeftUpCorner().X(), player->GetLeftUpCorner().Y(), player->GetRightBottomCorner().X(), player->GetRightBottomCorner().Y());
+			SDL_RenderDrawLine(_renderer, player->GetLeftUpCorner().X(), player->GetLeftUpCorner().Y(), player->GetRightBottomCorner().X(), player->GetRightBottomCorner().Y());
 
 			for (auto& block : blocks)
-				SDL_RenderDrawLine(Game::_renderer, block->GetLeftUpCorner().X(), block->GetLeftUpCorner().Y(), block->GetRightBottomCorner().X(), block->GetRightBottomCorner().Y());
+				SDL_RenderDrawLine(_renderer, block->GetLeftUpCorner().X(), block->GetLeftUpCorner().Y(), block->GetRightBottomCorner().X(), block->GetRightBottomCorner().Y());
 		}
 
-		SDL_RenderPresent(Game::_renderer);
-
-		if (time(NULL) - seconds >= 1)
-		{
-			Game::DeltaTime = (float)(time(NULL) - seconds) / nbFrames;
-			seconds = time(NULL);
-
-			//cout << "FPS = " << nbFrames << endl;
-			cout << "DeltaTime = " << Game::DeltaTime << endl;
-
-			nbFrames = 0;
-		}
+		//FRONT BUFFER RENDER
+		SDL_RenderPresent(_renderer);	
     }
 }
 
@@ -187,8 +200,8 @@ void Game::LoadLevel(string path)
 		{
 			Object* newBlock = new Object(
 				blockTexture,
-				Vec2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row), "Block " + to_string(row * blocksInRow + col),
-				Vec2D(blockWidth, blockHeight)
+				Vector2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row), "Block " + to_string(row * blocksInRow + col),
+				Vector2D(blockWidth, blockHeight)
 			);
 			newBlock->SetCollisionType(ECollisionType::CTE_Block);
 			blocks.push_back(newBlock);
@@ -197,15 +210,15 @@ void Game::LoadLevel(string path)
 		}
 	}
 
-	Object* leftWall = new Object(NULL, Vec2D(0, 0), "Left wall", Vec2D(1, _window_height));
+	Object* leftWall = new Object(NULL, Vector2D(0, 0), "Left wall", Vector2D(1, _window_height));
 	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
 	collisionManager->AddAgent(leftWall);
 
-	Object* rightWall = new Object(NULL, Vec2D(_window_width - 1., 0), "Right wall", Vec2D(1, _window_height));
+	Object* rightWall = new Object(NULL, Vector2D(_window_width - 1., 0), "Right wall", Vector2D(1, _window_height));
 	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
 	collisionManager->AddAgent(rightWall);
 
-	Object* topWall = new Object(NULL, Vec2D(0, 0), "Top wall", Vec2D(_window_width, 1));
+	Object* topWall = new Object(NULL, Vector2D(0, 0), "Top wall", Vector2D(_window_width, 1));
 	topWall->SetCollisionType(ECollisionType::CTE_Wall);
 	collisionManager->AddAgent(topWall);
 }
