@@ -1,4 +1,4 @@
-#include "../inc/collisions.h"
+#include "../inc/CollisionManager.h"
 
 #include "../inc/object.h"
 #include "../inc/Vector2D.h"

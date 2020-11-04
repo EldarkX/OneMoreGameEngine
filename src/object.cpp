@@ -1,6 +1,6 @@
 #include "../inc/object.h"
 #include "../inc/Vector2D.h"
-#include "../inc/arcanoid.h"
+#include "../inc/GameEngine.h"
 
 #include <iostream>
 

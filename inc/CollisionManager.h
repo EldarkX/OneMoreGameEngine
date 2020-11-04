@@ -1,6 +1,6 @@
 #pragma once
 
-#include "arcanoid.h"
+#include "GameEngine.h"
 
 enum class ECollisionType
 {

@@ -1,6 +1,6 @@
-#include "../inc/arcanoid.h"
+#include "../inc/GameEngine.h"
 #include "../inc/moveableObject.h"
-#include "../inc/collisions.h"
+#include "../inc/CollisionManager.h"
 #include "../inc/Ball.h"
 
 #include <algorithm>
@@ -25,7 +25,7 @@ void Game::PreInit()
     Game::_window = SDL_CreateWindow("Arcanoid", 200, 200, _window_width,
       _window_height, 0);
 
-    Game::_renderer = SDL_CreateRenderer(_window, 1, SDL_RENDERER_ACCELERATED);
+    Game::_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	IMG_Init(IMG_INIT_PNG);
 }
@@ -83,7 +83,7 @@ void Game::Tick()
     while (gameStatus == EGameStatus::GSE_Game)
     {
 		// DELTA TIME CALCULATION
-		while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 7));
+		while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1));
 		DeltaTime = (SDL_GetTicks() - mTicksCount) / 1000.f;
 		DeltaTime = DeltaTime > 0.05 ? 0.05 : DeltaTime;
 		mTicksCount = SDL_GetTicks();
@@ -142,7 +142,17 @@ void Game::Tick()
 
 void Game::End()
 {
+	for (auto obj : blocks)
+		delete obj;
 
+	delete player;
+	delete ball;
+
+	delete collisionManager;
+
+	SDL_DestroyRenderer(_renderer);
+	SDL_DestroyWindow(_window);
+	SDL_Quit();
 }
 
 MoveableObject *Game::GetPlayer() const

@@ -1,4 +1,4 @@
-#include "../inc/arcanoid.h"
+#include "../inc/GameEngine.h"
 
 int main(int argc, char **argv)
 {

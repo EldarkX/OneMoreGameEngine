@@ -1,8 +1,8 @@
 #pragma once
 
-#include "arcanoid.h"
+#include "GameEngine.h"
 #include "Vector2D.h"
-#include "collisions.h"
+#include "CollisionManager.h"
 
 class Object
 {
