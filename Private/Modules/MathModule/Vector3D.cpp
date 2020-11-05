@@ -1,4 +1,4 @@
-#include "../inc/Vector3D.h"
+#include "Modules/MathModule/Vector3D.h"
 
 #include <cmath>
 

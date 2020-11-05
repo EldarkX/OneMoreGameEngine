@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../inc/Vector2D.h"
+#include "Modules/MathModule/Vector2D.h"
 
 class Vector3D : public Vector2D
 {
