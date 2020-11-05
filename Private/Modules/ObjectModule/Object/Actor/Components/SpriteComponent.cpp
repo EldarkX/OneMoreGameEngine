@@ -4,7 +4,8 @@
 
 void SpriteComponent::Tick(double deltaTime)
 {
-	Draw();
+	if (mTexture)
+		Draw();
 }
 
 void SpriteComponent::Draw()

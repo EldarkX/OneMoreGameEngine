@@ -15,7 +15,7 @@ Actor::Actor(GameEngine* gameEngine, SDL_Texture *texture,
 
 	mSpriteComponent->SetOwner(this);
 	
-	//mComponents.push_back(static_cast<BaseComponent *>(mSpriteComponent));
+	mComponents.push_back(static_cast<BaseComponent *>(mSpriteComponent));
 
     mSpeed = 270;
 }
@@ -27,9 +27,6 @@ void Actor::Tick(double deltaTime)
 
 	for (auto Comp : mComponents)
 		Comp->Tick(deltaTime);
-
-	if (mSpriteComponent && mSpriteComponent->GetTexture())
-		mSpriteComponent->Tick(deltaTime);
 
 	Movement(deltaTime);
 }

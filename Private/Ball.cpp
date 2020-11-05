@@ -7,20 +7,19 @@ void Ball::OnCollision(class Actor* AnotherObject, class Vector2D& point)
 {
 	if (AnotherObject->GetCollisionType() == ECollisionType::CTE_Player)
 	{
-		SetVelocity(Vector2D((mTransform->GetPosition() - AnotherObject->GetActorPosition()).X() / (AnotherObject->GetActorSize().X() / 2) - 1, -1));
-	}
-	else if (AnotherObject->GetCollisionType() == ECollisionType::CTE_Wall)
-	{
-		if (AnotherObject->GetObjectName() == "Left wall" || AnotherObject->GetObjectName() == "Right wall")
-			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y()));
-		else
-			SetVelocity(Vector2D(GetVelocity().X(), GetVelocity().Y() * -1));
+		SetVelocity(Vector2D((GetActorPosition().X() - AnotherObject->GetActorPosition().X()) / (AnotherObject->GetActorSize().X() / 2), -1));
 	}
 	else
 	{
-		bool VerticalReflect = (mTransform->GetPosition().X() - AnotherObject->GetActorPosition().X())
-			> (mTransform->GetPosition().Y() - AnotherObject->GetActorPosition().Y());
-		if (VerticalReflect)
+		double SideRX1 = GetActorPosition().X() + GetActorSize().X() / 2.;
+		double SideLX1 = GetActorPosition().X() - GetActorSize().X() / 2.;
+		double SideRX2 = AnotherObject->GetActorPosition().X() + AnotherObject->GetActorSize().X() / 2.;
+		double SideLX2 = AnotherObject->GetActorPosition().X() - AnotherObject->GetActorSize().X() / 2.;
+
+		cout << "SideRX1 = " << SideRX1 << " SideLX1 = " << SideLX1 << endl;
+		cout << "SideRX2 = "<< SideRX2 << " SideLX2 = "	 << SideLX2 << endl;
+
+		if (abs(SideRX1 - SideLX2) < 1 || abs(SideLX1 - SideRX2) < 1)
 			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y()));
 		else
 			SetVelocity(Vector2D(GetVelocity().X(), GetVelocity().Y() * -1));

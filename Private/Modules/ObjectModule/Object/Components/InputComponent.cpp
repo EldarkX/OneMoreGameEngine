@@ -12,6 +12,13 @@ void    handleInput(GameEngine *Game, const SDL_Event *event)
     {
         Game->SetGameStatus(EGameStatus::GSE_Exit);
     }
+	if (event->key.keysym.sym == SDL_KeyCode::SDLK_SPACE && event->type == SDL_KEYDOWN)
+	{
+		if (Game->GetGameStatus() == EGameStatus::GSE_Game)
+			Game->SetGameStatus(EGameStatus::GSE_Pause);
+		else
+			Game->SetGameStatus(EGameStatus::GSE_Game);
+	}
 	else if (event->key.keysym.sym == SDL_KeyCode::SDLK_RIGHT
 		|| event->key.keysym.sym == SDL_KeyCode::SDLK_d)
     {

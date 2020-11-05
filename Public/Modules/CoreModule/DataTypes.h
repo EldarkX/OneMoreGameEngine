@@ -11,5 +11,6 @@ enum class ECollisionType
 enum class EGameStatus
 {
 	GSE_Game,
+	GSE_Pause,
 	GSE_Exit
 };

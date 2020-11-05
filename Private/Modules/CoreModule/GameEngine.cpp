@@ -37,7 +37,7 @@ void GameEngine::Init()
 {
 	mCollisionManager = new CollisionManager();
 
-	//Create mPlayer
+	/*CREATE PLAYER*/
 
 	SDL_Texture* mPlayerTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\Player.png");
 
@@ -47,13 +47,12 @@ void GameEngine::Init()
 	int mPlayerWidth = 80, mPlayerHeight = 10;
 
 	mPlayer = new Player(this, mPlayerTexture,
-	Vector2D(mWindow_width / 2, mWindow_height - mPlayerHeight / 2),
-	Vector2D(mPlayerWidth, mPlayerHeight), "mPlayer");
+		Vector2D(mWindow_width / 2, mWindow_height - mPlayerHeight / 2),
+		Vector2D(mPlayerWidth, mPlayerHeight), "mPlayer");
 
-	mCollisionManager->AddActiveAgent(mPlayer);
-	mCollisionManager->AddAgent(mPlayer);
+	AddActor(mPlayer);
 
-	//Create mBall
+	/*CREATE BALL*/
 
 	SDL_Texture* mBallTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\Ball.png");
 
@@ -63,13 +62,12 @@ void GameEngine::Init()
 	int mBallWidth = 16, mBallHeight = 16;
 
 	mBall = new Ball(this, mBallTexture,
-		Vector2D(mWindow_width / 2 - mBallWidth / 2, mWindow_height - mPlayerHeight - mBallHeight - 1),
+		Vector2D(mWindow_width / 2., mWindow_height - mPlayerHeight - mBallHeight / 2. - 1),
 		Vector2D(mBallWidth, mBallHeight), "Ball");
 
 	mBall->SetVelocity(Vector2D(0, -1));
 
-	mCollisionManager->AddActiveAgent(mBall);
-	mCollisionManager->AddAgent(mBall);
+	AddActor(mBall);
 
 	LoadLevel("tmp");
 }
@@ -81,7 +79,7 @@ void GameEngine::Tick()
 
     unsigned int	nbFrames = 0; 
 
-    while (mGameStatus == EGameStatus::GSE_Game)
+    while (mGameStatus != EGameStatus::GSE_Exit)
     {
 		// DELTA TIME CALCULATION
 		while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1));
@@ -109,45 +107,64 @@ void GameEngine::Tick()
 			handleInput(this, &event);
 		}
 
-		//BACK BUFFER RESET
-		SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-		SDL_RenderClear(mRenderer);
+		if (mGameStatus != EGameStatus::GSE_Pause)
+		{
+			//BACK BUFFER RESET
+			SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+			SDL_RenderClear(mRenderer);
 
-		//COLLISION HANDLE
-		mCollisionManager->CheckAllCollisions();
+			//COLLISION HANDLE
+			mCollisionManager->CheckAllCollisions();
 
-		//OBJECTS UPDATE
-		mPlayer->Tick(DeltaTime);
+			//OBJECTS UPDATE
 
-		mBall->Tick(DeltaTime);
-      
-		for (auto &block : mBlocks)
-			block->Tick(DeltaTime);
+			mIsActorsUpdating = true;
+			for (auto& Actor : mActors)
+			{
+				Actor->Tick(DeltaTime);
+			}
+			mIsActorsUpdating = false;
 
-		//if (DEBUG_COLLISIONS)
-		//{
-		//	SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+			for (auto& newActor : mNewActors)
+			{
+				mActors.push_back(newActor);
+			}
 
-		//	SDL_RenderDrawLine(mRenderer, mBall->GetLeftUpCorner().X(), mBall->GetLeftUpCorner().Y(), mBall->GetRightBottomCorner().X(), mBall->GetRightBottomCorner().Y());
+			mNewActors.clear();
 
-		//	SDL_RenderDrawLine(mRenderer, mPlayer->GetLeftUpCorner().X(), mPlayer->GetLeftUpCorner().Y(), mPlayer->GetRightBottomCorner().X(), mPlayer->GetRightBottomCorner().Y());
+			if (DEBUG_COLLISIONS)
+			{
+				SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
-		//	for (auto& block : mBlocks)
-		//		SDL_RenderDrawLine(mRenderer, block->GetLeftUpCorner().X(), block->GetLeftUpCorner().Y(), block->GetRightBottomCorner().X(), block->GetRightBottomCorner().Y());
-		//}
+				for (auto& Actor : mActors)
+				{
+					SDL_RenderDrawLine(mRenderer,
+						Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2,
+						Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2,
+						Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2,
+						Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2);
+				}
+			}
 
-		//FRONT BUFFER RENDER
-		SDL_RenderPresent(mRenderer);	
+			KillActors();
+
+			//FRONT BUFFER RENDER
+			SDL_RenderPresent(mRenderer);
+		}
     }
 }
 
 void GameEngine::End()
 {
-	for (auto obj : mBlocks)
-		delete obj;
+	while (!mActors.empty())
+	{
+		RemoveActor(mActors.back());
+	}
 
-	delete mPlayer;
-	delete mBall;
+	while (!mNewActors.empty())
+	{
+		RemoveActor(mNewActors.back());
+	}
 
 	delete mCollisionManager;
 
@@ -157,15 +174,53 @@ void GameEngine::End()
 }
 
 
-void GameEngine::RemoveBlock(class Object* Block)
+void GameEngine::RemoveActor(Actor *ActorToRemove)
 {
-	mBlocks.erase(find(mBlocks.cbegin(), mBlocks.cend(), Block));
+	mActors.erase(find(mActors.cbegin(), mActors.cend(), ActorToRemove));
+
+	mCollisionManager->RemoveAgent(ActorToRemove);
+
+	delete ActorToRemove;
+}
+
+void GameEngine::AddActor(class Actor* ActorToAdd)
+{
+	mCollisionManager->AddAgent(ActorToAdd);
+
+	if (mIsActorsUpdating)
+	{
+		mNewActors.push_back(ActorToAdd);
+	}
+	else
+	{
+		mActors.push_back(ActorToAdd);
+	}
+}
+
+void GameEngine::KillActors()
+{
+	vector<Actor*> ActorsToKill;
+	for (auto Actor : mActors)
+	{
+		if (Actor->GetIsPendingToKill())
+		{
+			ActorsToKill.push_back(Actor);
+		}
+	}
+	while (!ActorsToKill.empty())
+	{
+		Actor *a = ActorsToKill.back();
+		ActorsToKill.pop_back();
+		RemoveActor(a);
+	}
 }
 
 class Actor* GameEngine::CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPosition, Vector2D ActorSize, string ObjectName)
 { 
 	return nullptr;
 }
+
+
 
 void GameEngine::LoadLevel(string path)
 {
@@ -201,21 +256,19 @@ void GameEngine::LoadLevel(string path)
 				Vector2D(blockWidth, blockHeight), "Block " + to_string(row * mBlocksInRow + col)
 			);
 			newBlock->SetCollisionType(ECollisionType::CTE_Block);
-			mBlocks.push_back(newBlock);
-			mCollisionManager->AddAgent(newBlock);
-
+			AddActor(newBlock);
 		}
 	}
 
-	Actor* leftWall = new Actor(this, NULL, Vector2D(0, 0), Vector2D(1, mWindow_height), "Left wall");
+	Actor* leftWall = new Actor(this, NULL, Vector2D(4., mWindow_height / 2.), Vector2D(8., mWindow_height), "Left wall");
 	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
-	mCollisionManager->AddAgent(leftWall);
+	AddActor(leftWall);
 
-	Actor* rightWall = new Actor(this, NULL, Vector2D(mWindow_width - 1., 0), Vector2D(1, mWindow_height), "Right wall");
+	Actor* rightWall = new Actor(this, NULL, Vector2D(mWindow_width - 4., mWindow_height / 2.), Vector2D(8., mWindow_height), "Right wall");
 	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
-	mCollisionManager->AddAgent(rightWall);
+	AddActor(rightWall);
 
-	Actor* topWall = new Actor(this, NULL, Vector2D(0, 0), Vector2D(mWindow_width, 1), "Top wall");
+	Actor* topWall = new Actor(this, NULL, Vector2D(mWindow_width / 2., 4.), Vector2D(mWindow_width, 8.), "Top wall");
 	topWall->SetCollisionType(ECollisionType::CTE_Wall);
-	mCollisionManager->AddAgent(topWall);
+	AddActor(topWall);
 }

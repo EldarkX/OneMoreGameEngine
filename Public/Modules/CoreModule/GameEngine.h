@@ -17,8 +17,8 @@ using std::string;
 
 using std::to_string;
 
-#define  DEBUG_COLLISIONS 0
-#define  SHOW_FPS 1
+#define  DEBUG_COLLISIONS 1
+#define  SHOW_FPS 0
 
 class GameEngine
 {
@@ -48,7 +48,11 @@ public:
 	const EGameStatus				GetGameStatus() const { return mGameStatus; }
 	void							SetGameStatus(EGameStatus newGameStatus) { mGameStatus = newGameStatus; }
 
-	void							RemoveBlock(class Object* Block);
+	void							AddActor(class Actor* ActorToAdd);
+	void							RemoveActor(class Actor* ActorToRemove);
+
+	void							KillActors();
+
 
 	class Actor*					CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPosition, Vector2D ActorSize, string ObjectName);
 
@@ -58,6 +62,8 @@ private:
 
 	double							DeltaTime;
 
+	bool							mIsActorsUpdating;
+
     SDL_Window						*mWindow;
     SDL_Renderer					*mRenderer;
 
@@ -66,7 +72,8 @@ private:
     int								mWindow_width;
     int								mWindow_height;
 
-    vector<class Actor *>			mBlocks;
+    vector<class Actor *>			mActors;
+	vector<class Actor*>			mNewActors;
     class Actor						*mPlayer = nullptr;
     class Actor						*mBall = nullptr;
 
