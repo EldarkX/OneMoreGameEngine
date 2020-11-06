@@ -4,6 +4,8 @@
 #include "Modules/MathModule/Vector2D.h"
 #include "Modules/MathModule/Transform2D.h"
 
+#include <algorithm>
+
 class Actor : public Object
 {
 
@@ -26,7 +28,7 @@ public:
     void							SetSpeed(float newSpeed);
 
     inline Vector2D					GetVelocity() const { return mVelocity; }
-	void							SetVelocity(Vector2D newVelocity) {mVelocity = newVelocity;} 
+	void							SetVelocity(Vector2D newVelocity) { mVelocity = newVelocity; }
 
 	ECollisionType					GetCollisionType() const { return mCollisionType; }
 	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
