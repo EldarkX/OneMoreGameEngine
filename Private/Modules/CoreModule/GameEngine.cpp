@@ -220,8 +220,6 @@ class Actor* GameEngine::CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPo
 	return nullptr;
 }
 
-
-
 void GameEngine::LoadLevel(string path)
 {
 	SDL_Texture* blockTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\block.png");

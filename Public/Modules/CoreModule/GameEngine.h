@@ -17,7 +17,7 @@ using std::string;
 
 using std::to_string;
 
-#define  DEBUG_COLLISIONS 1
+#define  DEBUG_COLLISIONS 0
 #define  SHOW_FPS 0
 
 class GameEngine

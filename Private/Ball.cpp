@@ -3,6 +3,8 @@
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
+#include <algorithm>
+
 void Ball::OnCollision(class Actor* AnotherObject, class Vector2D& point)
 {
 	if (AnotherObject->GetCollisionType() == ECollisionType::CTE_Player)
@@ -11,21 +13,29 @@ void Ball::OnCollision(class Actor* AnotherObject, class Vector2D& point)
 	}
 	else
 	{
-		double SideRX1 = GetActorPosition().X() + GetActorSize().X() / 2.;
-		double SideLX1 = GetActorPosition().X() - GetActorSize().X() / 2.;
-		double SideRX2 = AnotherObject->GetActorPosition().X() + AnotherObject->GetActorSize().X() / 2.;
-		double SideLX2 = AnotherObject->GetActorPosition().X() - AnotherObject->GetActorSize().X() / 2.;
+		double minX = std::min(abs(GetActorPosition().X() + GetActorSize().X() / 2.
+			- AnotherObject->GetActorPosition().X() + AnotherObject->GetActorSize().X() / 2.),
+			abs(GetActorPosition().X() - GetActorSize().X() / 2.
+				- AnotherObject->GetActorPosition().X() - AnotherObject->GetActorSize().X() / 2.));
 
-		cout << "SideRX1 = " << SideRX1 << " SideLX1 = " << SideLX1 << endl;
-		cout << "SideRX2 = "<< SideRX2 << " SideLX2 = "	 << SideLX2 << endl;
+		double minY = std::min(abs(GetActorPosition().Y() + GetActorSize().Y() / 2.
+			- AnotherObject->GetActorPosition().Y() + AnotherObject->GetActorSize().Y() / 2.),
+			abs(GetActorPosition().Y() - GetActorSize().Y() / 2.
+				- AnotherObject->GetActorPosition().Y() - AnotherObject->GetActorSize().Y() / 2.));
 
-		if (abs(SideRX1 - SideLX2) < 1 || abs(SideLX1 - SideRX2) < 1)
+		if (abs(minX - minY) < 1)
+		{
+			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y() * -1));
+		}
+		if (minX < minY)
+		{
 			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y()));
+		}
 		else
+		{
 			SetVelocity(Vector2D(GetVelocity().X(), GetVelocity().Y() * -1));
+		}
 	}
-
-	mTransform->SetPosition(mTransform->GetPosition() + GetVelocity());
 
 	if (AnotherObject->GetCollisionType() == ECollisionType::CTE_Block)
 	{
