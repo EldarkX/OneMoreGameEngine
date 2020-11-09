@@ -1,22 +1,13 @@
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-#include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
+#include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
-Actor::Actor(GameEngine* gameEngine, SDL_Texture *texture,
-        Vector2D initialPosition, Vector2D customSize, string ObjectName)
-        : Object(ObjectName), mGameEngine(gameEngine)
+Actor::Actor(GameEngine* gameEngine, string ObjectName)
+	: Object(ObjectName), mGameEngine(gameEngine)
 {
-	mTransform = new Transform2D(initialPosition, customSize, 0);
-
-	mSpriteComponent = new SpriteComponent();
-
-	mSpriteComponent->SetTexture(texture);
-
-	mSpriteComponent->SetOwner(this);
+	mTransformComponent = AddComponent<Transform2DComponent>();
 	
-	mComponents.push_back(static_cast<BaseComponent *>(mSpriteComponent));
-
     mSpeed = 270;
 }
 
@@ -31,7 +22,7 @@ void Actor::Tick(double deltaTime)
 	Movement(deltaTime);
 }
 
-void Actor::OnCollision(class Actor* AnotherObject, class Vector2D& point)
+void Actor::OnCollision(class Actor* AnotherActor, class CollisionComponent* AnotherCollisionComponent)
 {
 
 }
@@ -41,8 +32,33 @@ void Actor::SetSpeed(float newSpeed)
 	mSpeed = newSpeed;
 }
 
+//template<class T>
+//T *Actor::AddComponent()
+//{
+//	T* NewComponent = new T();
+//
+//	NewComponent->SetOwner(this);
+//
+//	mComponents.push_back(NewComponent);
+//
+//	return NewComponent;
+//}
+
+void Actor::RemoveComponent(BaseComponent* Component)
+{
+	mComponents.erase(find(mComponents.cbegin(), mComponents.cend(), Component));
+
+	delete Component;
+}
+
+void Actor::Destroy()
+{
+	while (!mComponents.empty())
+		RemoveComponent(mComponents[0]);
+}
+
 void Actor::Movement(double deltaTime)
 {
-	mTransform->SetPosition(mTransform->GetPosition() +
+	mTransformComponent->SetPosition(mTransformComponent->GetPosition() +
         Vector2D(mVelocity * mSpeed * deltaTime));
 }

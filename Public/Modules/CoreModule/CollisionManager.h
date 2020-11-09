@@ -6,15 +6,15 @@ class CollisionManager
 {
     public:
 
-        void AddAgent(class Actor *Agent);
-		void RemoveAgent(class Actor* Agent);
+        void AddAgent(class CollisionComponent *Agent);
+		void RemoveAgent(class CollisionComponent *Agent);
 
         void CheckAllCollisions();
 
     private:
 
-		bool AreCollided(Actor *Actor1, Actor *Actor2, class Vector2D*point);
+		bool AreCollided(class CollisionComponent *Agent1, class CollisionComponent *Agent2);
 
-        vector<Actor *> Agents;
+        vector<class CollisionComponent*> Agents;
 };
 

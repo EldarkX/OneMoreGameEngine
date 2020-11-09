@@ -1,15 +1,18 @@
 #include "Modules/CoreModule/CollisionManager.h"
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
+
+#include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
+
 #include "Modules/MathModule/Vector2D.h"
 
-void CollisionManager::AddAgent(class Actor* Agent)
+void CollisionManager::AddAgent(class CollisionComponent* Agent)
 {
 	Agents.push_back(Agent);
 }
 
 
-void CollisionManager::RemoveAgent(class Actor* Agent)
+void CollisionManager::RemoveAgent(class CollisionComponent* Agent)
 {
 	Agents.erase(find(Agents.cbegin(), Agents.cend(), Agent));
 }
@@ -18,7 +21,7 @@ void CollisionManager::CheckAllCollisions()
 {
 	for (int AgentIndex = 0, AgentsAmount = Agents.size(); AgentIndex < AgentsAmount - 1; ++AgentIndex)
 	{
-		if (Agents[AgentIndex]->GetIsPendingToKill())
+		if (Agents[AgentIndex]->GetOwner()->GetIsPendingToKill())
 			continue;
 
 		for (int AgentToCheckIndex = AgentIndex + 1; AgentToCheckIndex < AgentsAmount; ++AgentToCheckIndex)
@@ -27,29 +30,25 @@ void CollisionManager::CheckAllCollisions()
 				continue;
 
 			Vector2D point;
-			if (AreCollided(Agents[AgentIndex], Agents[AgentToCheckIndex], &point))
+			if (AreCollided(Agents[AgentIndex], Agents[AgentToCheckIndex]))
 			{
-				Agents[AgentIndex]->OnCollision(Agents[AgentToCheckIndex], point);
-				Agents[AgentToCheckIndex]->OnCollision(Agents[AgentIndex], point);
+				Agents[AgentIndex]->TriggerCollision(Agents[AgentToCheckIndex]->GetOwner(), Agents[AgentToCheckIndex]);
+				Agents[AgentToCheckIndex]->TriggerCollision(Agents[AgentIndex]->GetOwner(), Agents[AgentIndex]);
 			}
 		}
 	}
 }
 
-bool CollisionManager::AreCollided(Actor* Actor1, Actor* Actor2, Vector2D *point)
+bool CollisionManager::AreCollided(CollisionComponent* Agent1, CollisionComponent* Agent2)
 {
-	Vector2D LeftUp1 = Actor1->GetActorPosition() - Actor1->GetActorSize() / 2.;
-	Vector2D RightBottom1 = Actor1->GetActorPosition() + Actor1->GetActorSize() / 2.;
-	Vector2D LeftUp2 = Actor2->GetActorPosition() - Actor2->GetActorSize() / 2.;
-	Vector2D RightBottom2 = Actor2->GetActorPosition() + Actor2->GetActorSize() / 2.;
+	Vector2D LeftUp1 = Agent1->GetOwner()->GetActorPosition() - Agent1->GetOwner()->GetActorSize() / 2.;
+	Vector2D RightBottom1 = Agent1->GetOwner()->GetActorPosition() + Agent1->GetOwner()->GetActorSize() / 2.;
+	Vector2D LeftUp2 = Agent2->GetOwner()->GetActorPosition() - Agent2->GetOwner()->GetActorSize() / 2.;
+	Vector2D RightBottom2 = Agent2->GetOwner()->GetActorPosition() + Agent2->GetOwner()->GetActorSize() / 2.;
 	
 	if (LeftUp1.X() <= RightBottom2.X() && RightBottom1.X() >= LeftUp2.X() &&
 		LeftUp1.Y() <= RightBottom2.Y() && RightBottom1.Y() >= LeftUp2.Y())
 	{
-		if ((Actor1->GetCollisionType() == ECollisionType::CTE_Wall && Actor2->GetCollisionType() == ECollisionType::CTE_Ball)
-			|| (Actor2->GetCollisionType() == ECollisionType::CTE_Wall && Actor1->GetCollisionType() == ECollisionType::CTE_Ball))
-			cout << "";
-		//*point = (Actor1->GetActorPosition() + Actor2->GetActorPosition()) / 2; //wrong calc
 		return true;
 	}
 	return false;

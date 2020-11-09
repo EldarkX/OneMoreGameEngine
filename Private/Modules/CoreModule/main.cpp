@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-	GameEngine gameEngine(960, 720);
+	GameEngine gameEngine(1280, 720);
 
 	gameEngine.PreInit();
 

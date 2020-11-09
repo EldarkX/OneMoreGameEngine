@@ -2,7 +2,7 @@
 
 #include "Modules/ObjectModule/Object.h"
 #include "Modules/MathModule/Vector2D.h"
-#include "Modules/MathModule/Transform2D.h"
+#include "Modules/ObjectModule/Object/Actor/Components/Transform2DComponent.h"
 
 #include <algorithm>
 
@@ -11,18 +11,17 @@ class Actor : public Object
 
 public:
 
-    Actor(class GameEngine *gameEngine, SDL_Texture *texture, 
-        Vector2D initialPosition, Vector2D customSize, string ObjectName);
+	Actor(GameEngine* gameEngine, string ObjectName);
 
     virtual void					Tick(double deltaTime) override;
 
-	virtual void					OnCollision(class Actor* AnotherObject, class Vector2D& point);
+	Vector2D						GetActorPosition() const { return mTransformComponent->GetPosition(); }
+	Vector2D						GetActorSize() const { return mTransformComponent->GetSize(); }
 
-	Vector2D						GetActorPosition() const { return mTransform->GetPosition(); }
-	Vector2D						GetActorSize() const { return mTransform->GetSize(); }
+	virtual void					OnCollision(class Actor* AnotherActor, class CollisionComponent* AnotherCollisionComponent);
 
-	void							SetActorPosition(Vector2D newPosition) { mTransform->SetPosition(newPosition); }
-	void							SetActorSize(Vector2D newSize) { mTransform->SetSize(newSize); }
+	void							SetActorPosition(Vector2D newPosition) { mTransformComponent->SetPosition(newPosition); }
+	void							SetActorSize(Vector2D newSize) { mTransformComponent->SetSize(newSize); }
 
     float							GetSpeed() const { return mSpeed; }
     void							SetSpeed(float newSpeed);
@@ -30,24 +29,32 @@ public:
     inline Vector2D					GetVelocity() const { return mVelocity; }
 	void							SetVelocity(Vector2D newVelocity) { mVelocity = newVelocity; }
 
-	ECollisionType					GetCollisionType() const { return mCollisionType; }
-	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
-
 	class GameEngine				*GetGameEngine() const { return mGameEngine; }
+
+	template<class T>
+	T* AddComponent()
+	{
+		BaseComponent* NewComponent = new T(this);
+
+		mComponents.push_back(NewComponent);
+
+		return NewComponent;
+	}
+
+	void							RemoveComponent(class BaseComponent* Component);
+
+
+	virtual void Destroy() override;
 
 protected:
 
 	virtual void					Movement(double deltaTime);
 
-	ECollisionType					mCollisionType;
-
 	class GameEngine				*mGameEngine;
 
 	vector<class BaseComponent*>	mComponents;
 
-	Transform2D						*mTransform;
-
-	class SpriteComponent			*mSpriteComponent;
+	class Transform2DComponent		*mTransformComponent;
 
     float							mSpeed;
     Vector2D						mVelocity;

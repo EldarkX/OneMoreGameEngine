@@ -1,8 +1,20 @@
 #include "Player.h"
 
-void Player::OnCollision(class Actor* AnotherObject, class Vector2D& point)
+#include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
+#include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
+
+Player::Player(class GameEngine* gameEngine, string ObjectName)
+	: Actor(gameEngine, ObjectName)
 {
-	
+	Sprite = AddComponent<SpriteComponent>();
+
+	Collision = AddComponent<CollisionComponent>();
+	Collision->SetCollisionType(ECollisionType::CTE_Player);
+
+	int mPlayerWidth = 80, mPlayerHeight = 10;
+
+	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2, gameEngine->GetWindowHeight() - mPlayerHeight / 2));
+	mTransformComponent->SetSize(Vector2D(mPlayerWidth, mPlayerHeight));
 }
 
 void Player::Movement(double deltaTime)

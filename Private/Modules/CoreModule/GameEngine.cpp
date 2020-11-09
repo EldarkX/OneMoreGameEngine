@@ -5,9 +5,12 @@
 #include "Modules/CoreModule/CollisionManager.h"
 
 #include "Modules/ObjectModule/Object/Components/InputComponent.h"
+#include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
+#include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
 #include "Ball.h"
 #include "Player.h"
+#include "Block.h"
 
 #include <algorithm>
 
@@ -44,11 +47,8 @@ void GameEngine::Init()
 	if (!mPlayerTexture)
 		cout << IMG_GetError() << endl;
 
-	int mPlayerWidth = 80, mPlayerHeight = 10;
-
-	mPlayer = new Player(this, mPlayerTexture,
-		Vector2D(mWindow_width / 2, mWindow_height - mPlayerHeight / 2),
-		Vector2D(mPlayerWidth, mPlayerHeight), "mPlayer");
+	mPlayer = new Player(this, "mPlayer");
+	mPlayer->Sprite->SetTexture(mPlayerTexture);
 
 	AddActor(mPlayer);
 
@@ -59,13 +59,9 @@ void GameEngine::Init()
 	if (!mBallTexture)
 		cout << IMG_GetError() << endl;
 
-	int mBallWidth = 16, mBallHeight = 16;
+	mBall = new Ball(this, "Ball");
 
-	mBall = new Ball(this, mBallTexture,
-		Vector2D(mWindow_width / 2., mWindow_height - mPlayerHeight - mBallHeight / 2. - 1),
-		Vector2D(mBallWidth, mBallHeight), "Ball");
-
-	mBall->SetVelocity(Vector2D(0, -1));
+	mBall->Sprite->SetTexture(mBallTexture);
 
 	AddActor(mBall);
 
@@ -87,7 +83,7 @@ void GameEngine::Tick()
 		DeltaTime = DeltaTime > 0.05 ? 0.05 : DeltaTime;
 		mTicksCount = SDL_GetTicks();
 
-		if (SHOW_FPS)
+		if (DEBUG_SHOW_FPS)
 		{
 			nbFrames++;
 
@@ -178,15 +174,11 @@ void GameEngine::RemoveActor(Actor *ActorToRemove)
 {
 	mActors.erase(find(mActors.cbegin(), mActors.cend(), ActorToRemove));
 
-	mCollisionManager->RemoveAgent(ActorToRemove);
-
 	delete ActorToRemove;
 }
 
 void GameEngine::AddActor(class Actor* ActorToAdd)
 {
-	mCollisionManager->AddAgent(ActorToAdd);
-
 	if (mIsActorsUpdating)
 	{
 		mNewActors.push_back(ActorToAdd);
@@ -225,7 +217,7 @@ void GameEngine::LoadLevel(string path)
 	SDL_Texture* blockTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\block.png");
 
 	if (!blockTexture)
-    cout << "Error: can't load block texture!" << endl;
+		cout << "Error: can't load block texture!" << endl;
 
 	vector<string> level;
 
@@ -239,34 +231,37 @@ void GameEngine::LoadLevel(string path)
 	double gapH = 10;
 
 	double blockWidth = (mWindow_width - offsetW * 2 - gapW * mBlocksInRow)
-                    / mBlocksInRow;
+		/ mBlocksInRow;
 
 	double blockHeight = (mWindow_height - offsetH - mWindow_height * 0.6
-                    - gapH * rows) / rows;
+		- gapH * rows) / rows;
 
 	for (int row = 0; row < rows; ++row)
 	{
 		for (int col = 0; col < mBlocksInRow; ++col)
 		{
-			Actor* newBlock = new Actor(this,
-				blockTexture,
-				Vector2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row),
-				Vector2D(blockWidth, blockHeight), "Block " + to_string(row * mBlocksInRow + col)
-			);
-			newBlock->SetCollisionType(ECollisionType::CTE_Block);
+			Actor* newBlock = new Block(this, "Block " + to_string(row * mBlocksInRow + col));
+			newBlock->SetActorPosition(Vector2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row));
+			newBlock->SetActorSize(Vector2D(blockWidth, blockHeight));
 			AddActor(newBlock);
 		}
 	}
 
-	Actor* leftWall = new Actor(this, NULL, Vector2D(4., mWindow_height / 2.), Vector2D(8., mWindow_height), "Left wall");
-	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
+	Block* leftWall = new Block(this, "Left wall");
+	leftWall->SetActorPosition(Vector2D(4., mWindow_height / 2.));
+	leftWall->SetActorSize(Vector2D(8., mWindow_height));
+	leftWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(leftWall);
 
-	Actor* rightWall = new Actor(this, NULL, Vector2D(mWindow_width - 4., mWindow_height / 2.), Vector2D(8., mWindow_height), "Right wall");
-	leftWall->SetCollisionType(ECollisionType::CTE_Wall);
+	Block* rightWall = new Block(this, "Right wall");
+	rightWall->SetActorPosition(Vector2D(mWindow_width - 4., mWindow_height / 2.));
+	rightWall->SetActorSize(Vector2D(8., mWindow_height));
+	rightWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(rightWall);
 
-	Actor* topWall = new Actor(this, NULL, Vector2D(mWindow_width / 2., 4.), Vector2D(mWindow_width, 8.), "Top wall");
-	topWall->SetCollisionType(ECollisionType::CTE_Wall);
+	Block* topWall = new Block(this, "Top wall");
+	topWall->SetActorPosition(Vector2D(mWindow_width / 2., 4.));
+	topWall->SetActorSize(Vector2D(mWindow_width, 8.));
+	topWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(topWall);
 }

@@ -7,17 +7,12 @@ class Player : public Actor
 
 public:
 
-	Player(class GameEngine* gameEngine, SDL_Texture* texture,
-		Vector2D initialPosition, Vector2D customSize, string ObjectName)
-		: Actor(gameEngine, texture, initialPosition, customSize, ObjectName)
-	{
-		mCollisionType = ECollisionType::CTE_Player;
-	};
+	Player(class GameEngine* gameEngine, string ObjectName);
 
-
-	virtual void OnCollision(class Actor* AnotherObject, class Vector2D& point) override;
+	class SpriteComponent*		Sprite;
+	class CollisionComponent*	Collision;
 
 protected:
-	virtual void Movement(double deltaTime) override;
+	virtual void				Movement(double deltaTime) override;
 
 };

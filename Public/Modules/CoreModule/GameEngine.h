@@ -18,7 +18,7 @@ using std::string;
 using std::to_string;
 
 #define  DEBUG_COLLISIONS 0
-#define  SHOW_FPS 0
+#define  DEBUG_SHOW_FPS 0
 
 class GameEngine
 {
@@ -37,10 +37,11 @@ public:
 
     void							LoadLevel(string path);
 
-	class Actor						*GetPlayer() const { return mPlayer; };
+	class Player					*GetPlayer() const { return mPlayer; };
 
 	SDL_Window						*GetWindow() const { return mWindow; }
 	SDL_Renderer					*GetRenderer() const { return mRenderer; }
+	class CollisionManager			*GetCollisionManager() const { return mCollisionManager; }
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
@@ -74,8 +75,8 @@ private:
 
     vector<class Actor *>			mActors;
 	vector<class Actor*>			mNewActors;
-    class Actor						*mPlayer = nullptr;
-    class Actor						*mBall = nullptr;
+    class Player					*mPlayer = nullptr;
+    class Ball						*mBall = nullptr;
 
 	class CollisionManager			*mCollisionManager = nullptr;
 

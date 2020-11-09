@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Vector2D.h"
+#include "Modules/MathModule/Vector2D.h"
+#include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-class Transform2D
+class Transform2DComponent : public BaseComponent
 {
 
 public:
-
-	Transform2D(Vector2D position, Vector2D size, float rotationAngle);
 
 	void		SetPosition(Vector2D newPosition);
 	void		SetSize(Vector2D newSize);
