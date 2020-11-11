@@ -24,12 +24,6 @@ Ball::Ball(class GameEngine* gameEngine, string ObjectName)
 
 	GetGameEngine()->GetCollisionManager()->AddAgent(Collision);
 
-	int mBallWidth = 16, mBallHeight = 16;
-
-	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2.f,
-		gameEngine->GetWindowHeight() - gameEngine->GetPlayer()->GetActorSize().Y() - mBallHeight / 2.f - 1));
-	mTransformComponent->SetSize(Vector2D(static_cast<float>(mBallWidth), static_cast<float>(mBallHeight)));
-
 	mSpeed = 400;
 
 	SetVelocity(Vector2D(0, -1));

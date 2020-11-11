@@ -27,21 +27,21 @@ public:
 
 	GameEngine(int window_width, int window_height);
 
-    void							PreInit();
+	void							PreInit();
 
-    void							Init();
+	void							Init();
 
-    void							Tick();
+	void							Tick();
 
-    void							End();
+	void							End();
 
-    void							LoadLevel(string path);
+	void							LoadLevel(string path);
 
-	class Player					*GetPlayer() const { return mPlayer; };
+	class Player* GetPlayer() const { return mPlayer; };
 
-	SDL_Window						*GetWindow() const { return mWindow; }
-	SDL_Renderer					*GetRenderer() const { return mRenderer; }
-	class CollisionManager			*GetCollisionManager() const { return mCollisionManager; }
+	SDL_Window* GetWindow() const { return mWindow; }
+	SDL_Renderer* GetRenderer() const { return mRenderer; }
+	class CollisionManager* GetCollisionManager() const { return mCollisionManager; }
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
@@ -54,9 +54,22 @@ public:
 
 	void							KillActors();
 
-	class Actor*					CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPosition, Vector2D ActorSize, string ObjectName);
+	template<class T>
+	T* CreateActor(Vector2D ActorPosition, Vector2D ActorSize, string ObjectName)
+	{
+		Actor* NewActor = new T(this, ObjectName);
+
+		NewActor->SetActorPosition(ActorPosition);
+		NewActor->SetActorSize(ActorSize);
+
+		AddActor(NewActor);
+
+		return static_cast<T *>(NewActor);
+	}
 
 private:
+
+	void							CheckWinCondition(class Object* obj);
 
 	EGameStatus						mGameStatus;
 
@@ -76,6 +89,8 @@ private:
 	vector<class Actor*>			mNewActors;
     class Player					*mPlayer = nullptr;
     class Ball						*mBall = nullptr;
+
+	int								blocksAmount;
 
 	class CollisionManager			*mCollisionManager = nullptr;
 

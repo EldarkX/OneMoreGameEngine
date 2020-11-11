@@ -14,11 +14,6 @@ Player::Player(class GameEngine* gameEngine, string ObjectName)
 	Collision->SetCollisionType(ECollisionType::CTE_Player);
 
 	GetGameEngine()->GetCollisionManager()->AddAgent(Collision);
-
-	float mPlayerWidth = gameEngine->GetWindowWidth() - 20.f, mPlayerHeight = 10.f;
-
-	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2.f, gameEngine->GetWindowHeight() - mPlayerHeight / 2.f));
-	mTransformComponent->SetSize(Vector2D(mPlayerWidth, mPlayerHeight));
 }
 
 void Player::Movement(float deltaTime)

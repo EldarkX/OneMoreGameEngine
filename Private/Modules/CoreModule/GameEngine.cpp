@@ -47,11 +47,12 @@ void GameEngine::Init()
 	if (!mPlayerTexture)
 		cout << IMG_GetError() << endl;
 
-	mPlayer = new Player(this, "mPlayer");
+	float mPlayerWidth = GetWindowWidth() - 400.f, mPlayerHeight = 10.f;
+
+	mPlayer = CreateActor<Player>(Vector2D(GetWindowWidth() / 2.f, GetWindowHeight() - mPlayerHeight / 2.f),
+		Vector2D(mPlayerWidth, mPlayerHeight), "Player");
+
 	mPlayer->Sprite->SetTexture(mPlayerTexture);
-
-	AddActor(mPlayer);
-
 	/*CREATE BALL*/
 
 	SDL_Texture* mBallTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\Ball.png");
@@ -59,11 +60,13 @@ void GameEngine::Init()
 	if (!mBallTexture)
 		cout << IMG_GetError() << endl;
 
-	mBall = new Ball(this, "Ball");
+	float mBallWidth = 500, mBallHeight = 500;
+
+	Vector2D BallPosition = Vector2D(GetWindowWidth() / 2.f, GetWindowHeight() - GetPlayer()->GetActorSize().Y() - mBallHeight / 2.f - 1);
+
+	mBall = CreateActor<Ball>(BallPosition,	Vector2D(mBallWidth, mBallHeight), "Ball");
 
 	mBall->Sprite->SetTexture(mBallTexture);
-
-	AddActor(mBall);
 
 	LoadLevel("tmp");
 }
@@ -207,9 +210,13 @@ void GameEngine::KillActors()
 	}
 }
 
-class Actor* GameEngine::CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPosition, Vector2D ActorSize, string ObjectName)
-{ 
-	return nullptr;
+void GameEngine::CheckWinCondition(Object *obj)
+{
+	blocksAmount--;
+	if (!blocksAmount)
+		cout << "Win" << endl;
+	else
+		cout << obj->GetObjectName() << " has just destroyed. Objects left: " << blocksAmount << endl;
 }
 
 void GameEngine::LoadLevel(string path)
@@ -223,6 +230,8 @@ void GameEngine::LoadLevel(string path)
 
 	int mBlocksInRow = 14;
 	int rows = 5;
+
+	blocksAmount = rows * mBlocksInRow;
 
 	float offsetW = mWindow_width / 8.f;
 	float offsetH = mWindow_height / 10.f;
@@ -240,35 +249,29 @@ void GameEngine::LoadLevel(string path)
 	{
 		for (int col = 0; col < mBlocksInRow; ++col)
 		{
-			Block* newBlock = new Block(this, "Block " + to_string(row * mBlocksInRow + col));
+			Vector2D BlockPosition = Vector2D(offsetW + blockWidth * col + gapW * col,
+				offsetH + blockHeight * row + gapH * row);
 
-			newBlock->SetActorPosition(Vector2D(offsetW + blockWidth * col + gapW * col,
-				offsetH + blockHeight * row + gapH * row));
-			newBlock->SetActorSize(Vector2D(blockWidth, blockHeight));
+			Block* newBlock = CreateActor<Block>(BlockPosition, Vector2D(blockWidth, blockHeight), "Block " + to_string(row * mBlocksInRow + col));
 
 			newBlock->Collision->SetCollisionType(ECollisionType::CTE_Block);
 
 			newBlock->Sprite->SetTexture(blockTexture);
 
-			AddActor(newBlock);
+			newBlock->OnDestroyed += MakeDelegate(this, &GameEngine::CheckWinCondition);
 		}
 	}
 
-	Block* leftWall = new Block(this, "Left wall");
-	leftWall->SetActorPosition(Vector2D(4.f, mWindow_height / 2.f));
-	leftWall->SetActorSize(Vector2D(8.f, static_cast<float>(mWindow_height)));
+	Block* leftWall = CreateActor<Block>(Vector2D(4.f, mWindow_height / 2.f),
+		Vector2D(8.f, static_cast<float>(mWindow_height)), "Left wall");
 	leftWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
-	AddActor(leftWall);
 
-	Block* rightWall = new Block(this, "Right wall");
-	rightWall->SetActorPosition(Vector2D(mWindow_width - 4.f, mWindow_height / 2.f));
-	rightWall->SetActorSize(Vector2D(8.f, static_cast<float>(mWindow_height)));
+	Block* rightWall = CreateActor<Block>(Vector2D(mWindow_width - 4.f, mWindow_height / 2.f),
+		Vector2D(8.f, static_cast<float>(mWindow_height)), "Right wall");
 	rightWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
-	AddActor(rightWall);
 
-	Block* topWall = new Block(this, "Top wall");
-	topWall->SetActorPosition(Vector2D(mWindow_width / 2.f, 4.f));
-	topWall->SetActorSize(Vector2D(static_cast<float>(mWindow_width), 8.f));
+	Block* topWall = CreateActor<Block>(Vector2D(mWindow_width / 2.f, 4.f),
+		Vector2D(static_cast<float>(mWindow_width), 8.f), "Top wall");
 	topWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
-	AddActor(topWall);
+
 }
