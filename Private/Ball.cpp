@@ -31,6 +31,10 @@ Ball::Ball(class GameEngine* gameEngine, string ObjectName)
 
 void Ball::OnCollision(Actor* AnotherActor, CollisionComponent* AnotherCollisionComponent)
 {
+	if (isCollided)
+		return;
+	
+	isCollided = true;
 	if (AnotherCollisionComponent->GetCollisionType() == ECollisionType::CTE_Player)
 	{
 		SetVelocity(Vector2D((GetActorPosition().X() - AnotherActor->GetActorPosition().X()) / (AnotherActor->GetActorSize().X() / 2), -1));
@@ -48,7 +52,9 @@ void Ball::OnCollision(Actor* AnotherActor, CollisionComponent* AnotherCollision
 		double minY = std::min(abs(GetActorPosition().Y() + HalfSizeY - AnotherActor->GetActorPosition().Y() + AnotherObjHalfSizeY),
 			abs(GetActorPosition().Y() - HalfSizeY - AnotherActor->GetActorPosition().Y() - AnotherObjHalfSizeY));
 
-		if (abs(minX - minY) < 1.)
+		double min = minX < minY;
+
+		if (abs(minX - minY) < min)
 		{
 			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y() * -1));
 		}
@@ -62,13 +68,15 @@ void Ball::OnCollision(Actor* AnotherActor, CollisionComponent* AnotherCollision
 		}
 	}
 
-	mTransformComponent->SetPosition(mTransformComponent->GetPosition() + Vector2D(mVelocity));
+	//mTransformComponent->SetPosition(mTransformComponent->GetPosition() + Vector2D(mVelocity));
 
 }
 
 void Ball::Movement(float deltaTime)
 {
 	Actor::Movement(deltaTime);
+
+	isCollided = false;
 
 	if (mTransformComponent->GetPosition().Y() >= mGameEngine->GetWindowHeight())
 	{

@@ -22,6 +22,6 @@ Block::Block(class GameEngine* gameEngine, string ObjectName)
 void Block::OnCollision(class Actor* AnotherActor, CollisionComponent* AnotherCollisionComponent)
 {
 	if (AnotherCollisionComponent->GetCollisionType() == ECollisionType::CTE_Ball && Collision->GetCollisionType() != ECollisionType::CTE_Wall)
-		mIsPendingToKill = true;
+		SetIsPendingToKill(true);
 }
 

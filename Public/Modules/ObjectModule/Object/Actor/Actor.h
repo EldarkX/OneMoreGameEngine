@@ -29,6 +29,11 @@ public:
 
 	class GameEngine				*GetGameEngine() const { return mGameEngine; }
 
+	bool							GetIsPendingToKill() const { return mIsPendingToKill; }
+	void							SetIsPendingToKill(bool newIsPendingToKill);
+
+	MulticastDelegate1<Actor*>		OnStartBeingPendingToKill;
+
 	template<class T>
 	T* AddComponent()
 	{
@@ -58,5 +63,7 @@ protected:
 
     float							mSpeed;
     Vector2D						mVelocity;
+
+	bool			mIsPendingToKill = false;
 
 };

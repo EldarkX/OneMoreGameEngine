@@ -60,7 +60,7 @@ void GameEngine::Init()
 	if (!mBallTexture)
 		cout << IMG_GetError() << endl;
 
-	float mBallWidth = 500, mBallHeight = 500;
+	float mBallWidth = 40, mBallHeight = 40;
 
 	Vector2D BallPosition = Vector2D(GetWindowWidth() / 2.f, GetWindowHeight() - GetPlayer()->GetActorSize().Y() - mBallHeight / 2.f - 1);
 
@@ -194,14 +194,6 @@ void GameEngine::AddActor(class Actor* ActorToAdd)
 
 void GameEngine::KillActors()
 {
-	vector<Actor*> ActorsToKill;
-	for (auto Actor : mActors)
-	{
-		if (Actor->GetIsPendingToKill())
-		{
-			ActorsToKill.push_back(Actor);
-		}
-	}
 	while (!ActorsToKill.empty())
 	{
 		Actor *a = ActorsToKill.back();

@@ -25,7 +25,7 @@ void CollisionManager::CheckAllCollisions()
 		{
 			for (size_t AgentToCheckIndex = AgentIndex + 1; AgentToCheckIndex < AgentsAmount; ++AgentToCheckIndex)
 			{
-				if (!Agents[AgentToCheckIndex]->GetIsPendingToKill())
+				if (!Agents[AgentToCheckIndex]->GetOwner()->GetIsPendingToKill())
 				{
 					if (AreCollided(Agents[AgentIndex], Agents[AgentToCheckIndex]))
 					{

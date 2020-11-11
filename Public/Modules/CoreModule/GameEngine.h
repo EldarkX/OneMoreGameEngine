@@ -10,6 +10,10 @@
 #include "Modules/MathModule/Vector2D.h"
 #include "DataTypes.h"
 
+#include "Utils/Delegate/MulticastDelegate.h"
+
+using namespace DelegateLib;
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -52,6 +56,8 @@ public:
 	void							AddActor(class Actor* ActorToAdd);
 	void							RemoveActor(class Actor* ActorToRemove);
 
+	void							AddObjectToKill(class Actor* actorToKill) { ActorsToKill.push_back(actorToKill); }
+
 	void							KillActors();
 
 	template<class T>
@@ -61,6 +67,8 @@ public:
 
 		NewActor->SetActorPosition(ActorPosition);
 		NewActor->SetActorSize(ActorSize);
+
+		NewActor->OnStartBeingPendingToKill += MakeDelegate(this, &GameEngine::AddObjectToKill);
 
 		AddActor(NewActor);
 
@@ -87,6 +95,7 @@ private:
 
     vector<class Actor *>			mActors;
 	vector<class Actor*>			mNewActors;
+	vector<class Actor*>			ActorsToKill;
     class Player					*mPlayer = nullptr;
     class Ball						*mBall = nullptr;
 

@@ -17,5 +17,6 @@ protected:
 
 	virtual void	Movement(float deltaTime) override;
 
+	bool isCollided = false;
 };
 

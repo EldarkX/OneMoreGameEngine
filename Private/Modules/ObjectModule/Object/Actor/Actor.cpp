@@ -32,6 +32,16 @@ void Actor::RemoveComponent(BaseComponent* Component)
 	Component->Destroy();
 }
 
+void Actor::SetIsPendingToKill(bool newIsPendingToKill)
+{
+	mIsPendingToKill = newIsPendingToKill;
+
+	if (mIsPendingToKill)
+	{
+		OnStartBeingPendingToKill(this);
+	}
+}
+
 void Actor::Destroy()
 {
 	while (!mComponents.empty())
