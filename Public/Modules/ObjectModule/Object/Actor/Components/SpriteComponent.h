@@ -7,6 +7,8 @@ class SpriteComponent : public BaseComponent
 
 public:
 
+	SpriteComponent(class Actor* Owner) : BaseComponent(Owner) {};
+
 	void			Tick(float deltaTime) override;
 
 	SDL_Texture		*GetTexture() const { return mTexture; }

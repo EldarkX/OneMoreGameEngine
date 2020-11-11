@@ -7,6 +7,8 @@ class CollisionComponent : public BaseComponent
 
 public:
 
+	CollisionComponent(class Actor* Owner);
+
 	ECollisionType					GetCollisionType() const { return mCollisionType; }
 	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
 

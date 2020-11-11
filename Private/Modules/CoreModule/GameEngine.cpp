@@ -8,10 +8,6 @@
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 #include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
-#include "Ball.h"
-#include "Player.h"
-#include "Block.h"
-
 #include <algorithm>
 
 GameEngine::GameEngine(int window_width, int window_height)
@@ -21,54 +17,46 @@ GameEngine::GameEngine(int window_width, int window_height)
 
 };
 
-void GameEngine::PreInit()
+int GameEngine::PreInit()
 {
     mGameStatus = EGameStatus::GSE_Game;
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
-		  cout << "Can't init SDL" << endl;
+	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
+	{
+		cout << "Can't init SDL" << endl;
+		return -1;
+	}
 
-    mWindow = SDL_CreateWindow("Arcanoid", 200, 200, mWindow_width,
-      mWindow_height, 0);
+    mWindow = SDL_CreateWindow("Arcanoid", 200, 200, mWindow_width, mWindow_height, 0);
+
+	if (!mWindow)
+	{
+		cout << "Can't create SDL_Window" << endl;
+		return -1;
+	}
 
     mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	IMG_Init(IMG_INIT_PNG);
-}
+	if (!mRenderer)
+	{
+		cout << "Can't create SDL_Renderer" << endl;
+		return -1;
+	}
 
-void GameEngine::Init()
-{
+	if (IMG_Init(IMG_INIT_PNG) == -1)
+	{
+		cout << "Can't init IMG" << endl;
+		return -1;
+	}
+
 	mCollisionManager = new CollisionManager();
 
-	/*CREATE PLAYER*/
-
-	SDL_Texture* mPlayerTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\Player.png");
-
-	if (!mPlayerTexture)
-		cout << IMG_GetError() << endl;
-
-	float mPlayerWidth = GetWindowWidth() - 400.f, mPlayerHeight = 10.f;
-
-	mPlayer = CreateActor<Player>(Vector2D(GetWindowWidth() / 2.f, GetWindowHeight() - mPlayerHeight / 2.f),
-		Vector2D(mPlayerWidth, mPlayerHeight), "Player");
-
-	mPlayer->Sprite->SetTexture(mPlayerTexture);
-	/*CREATE BALL*/
-
-	SDL_Texture* mBallTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\Ball.png");
-
-	if (!mBallTexture)
-		cout << IMG_GetError() << endl;
-
-	float mBallWidth = 40, mBallHeight = 40;
-
-	Vector2D BallPosition = Vector2D(GetWindowWidth() / 2.f, GetWindowHeight() - GetPlayer()->GetActorSize().Y() - mBallHeight / 2.f - 1);
-
-	mBall = CreateActor<Ball>(BallPosition,	Vector2D(mBallWidth, mBallHeight), "Ball");
-
-	mBall->Sprite->SetTexture(mBallTexture);
-
-	LoadLevel("tmp");
+	if (!mCollisionManager)
+	{
+		cout << "Can't create CollisionManager" << endl;
+		return -1;
+	}
+	return 1;
 }
 
 void GameEngine::Tick()
@@ -153,26 +141,6 @@ void GameEngine::Tick()
     }
 }
 
-void GameEngine::End()
-{
-	while (!mActors.empty())
-	{
-		RemoveActor(mActors.back());
-	}
-
-	while (!mNewActors.empty())
-	{
-		RemoveActor(mNewActors.back());
-	}
-
-	delete mCollisionManager;
-
-	SDL_DestroyRenderer(mRenderer);
-	SDL_DestroyWindow(mWindow);
-	SDL_Quit();
-}
-
-
 void GameEngine::RemoveActor(Actor *ActorToRemove)
 {
 	mActors.erase(find(mActors.cbegin(), mActors.cend(), ActorToRemove));
@@ -202,68 +170,27 @@ void GameEngine::KillActors()
 	}
 }
 
-void GameEngine::CheckWinCondition(Object *obj)
+GameEngine::~GameEngine()
 {
-	blocksAmount--;
-	if (!blocksAmount)
-		cout << "Win" << endl;
-	else
-		cout << obj->GetObjectName() << " has just destroyed. Objects left: " << blocksAmount << endl;
-}
-
-void GameEngine::LoadLevel(string path)
-{
-	SDL_Texture* blockTexture = IMG_LoadTexture(mRenderer, "D:\\Andrey\\Projects\\VS2019\\OneMoreEngine\\OneMoreEngine\\assets\\images\\block.png");
-
-	if (!blockTexture)
-		cout << "Error: can't load block texture!" << endl;
-
-	vector<string> level;
-
-	int mBlocksInRow = 14;
-	int rows = 5;
-
-	blocksAmount = rows * mBlocksInRow;
-
-	float offsetW = mWindow_width / 8.f;
-	float offsetH = mWindow_height / 10.f;
-
-	float gapW = 10;
-	float gapH = 10;
-
-	float blockWidth = (mWindow_width - offsetW * 2 - gapW * mBlocksInRow)
-		/ mBlocksInRow;
-
-	float blockHeight = (mWindow_height - offsetH - mWindow_height * 0.6f
-		- gapH * rows) / rows;
-
-	for (int row = 0; row < rows; ++row)
+	while (!mActors.empty())
 	{
-		for (int col = 0; col < mBlocksInRow; ++col)
-		{
-			Vector2D BlockPosition = Vector2D(offsetW + blockWidth * col + gapW * col,
-				offsetH + blockHeight * row + gapH * row);
-
-			Block* newBlock = CreateActor<Block>(BlockPosition, Vector2D(blockWidth, blockHeight), "Block " + to_string(row * mBlocksInRow + col));
-
-			newBlock->Collision->SetCollisionType(ECollisionType::CTE_Block);
-
-			newBlock->Sprite->SetTexture(blockTexture);
-
-			newBlock->OnDestroyed += MakeDelegate(this, &GameEngine::CheckWinCondition);
-		}
+		RemoveActor(mActors.back());
 	}
 
-	Block* leftWall = CreateActor<Block>(Vector2D(4.f, mWindow_height / 2.f),
-		Vector2D(8.f, static_cast<float>(mWindow_height)), "Left wall");
-	leftWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
+	while (!mNewActors.empty())
+	{
+		RemoveActor(mNewActors.back());
+	}
 
-	Block* rightWall = CreateActor<Block>(Vector2D(mWindow_width - 4.f, mWindow_height / 2.f),
-		Vector2D(8.f, static_cast<float>(mWindow_height)), "Right wall");
-	rightWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
+	if (mCollisionManager)
+		delete mCollisionManager;
 
-	Block* topWall = CreateActor<Block>(Vector2D(mWindow_width / 2.f, 4.f),
-		Vector2D(static_cast<float>(mWindow_width), 8.f), "Top wall");
-	topWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
+	if (mRenderer)
+		SDL_DestroyRenderer(mRenderer);
 
+	if (mWindow)
+		SDL_DestroyWindow(mWindow);
+
+	SDL_Quit();
 }
+

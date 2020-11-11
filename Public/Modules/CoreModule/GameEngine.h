@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 
 #include <iostream>
 #include <vector>
@@ -31,21 +31,15 @@ public:
 
 	GameEngine(int window_width, int window_height);
 
-	void							PreInit();
+	int								PreInit();
 
-	void							Init();
+	virtual int						Init() = 0;
 
-	void							Tick();
+	virtual void					Tick();
 
-	void							End();
-
-	void							LoadLevel(string path);
-
-	class Player* GetPlayer() const { return mPlayer; };
-
-	SDL_Window* GetWindow() const { return mWindow; }
-	SDL_Renderer* GetRenderer() const { return mRenderer; }
-	class CollisionManager* GetCollisionManager() const { return mCollisionManager; }
+	SDL_Window*						GetWindow() const { return mWindow; }
+	SDL_Renderer*					GetRenderer() const { return mRenderer; }
+	class CollisionManager*			GetCollisionManager() const { return mCollisionManager; }
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
@@ -75,9 +69,9 @@ public:
 		return static_cast<T *>(NewActor);
 	}
 
-private:
+	~GameEngine();
 
-	void							CheckWinCondition(class Object* obj);
+protected:
 
 	EGameStatus						mGameStatus;
 
@@ -96,10 +90,6 @@ private:
     vector<class Actor *>			mActors;
 	vector<class Actor*>			mNewActors;
 	vector<class Actor*>			ActorsToKill;
-    class Player					*mPlayer = nullptr;
-    class Ball						*mBall = nullptr;
-
-	int								blocksAmount;
 
 	class CollisionManager			*mCollisionManager = nullptr;
 

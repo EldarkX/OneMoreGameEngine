@@ -37,7 +37,7 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
-		BaseComponent* NewComponent = new T();
+		BaseComponent* NewComponent = new T(this);
 
 		NewComponent->SetOwner(this);
 

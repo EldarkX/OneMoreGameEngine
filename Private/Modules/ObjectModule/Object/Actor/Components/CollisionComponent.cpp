@@ -4,6 +4,12 @@
 #include "Modules/CoreModule/CollisionManager.h"
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
+CollisionComponent::CollisionComponent(class Actor* Owner)
+	: BaseComponent(Owner)
+{
+	mOwner->GetGameEngine()->GetCollisionManager()->AddAgent(this);
+}
+
 void CollisionComponent::TriggerCollision(class Actor* AnotherActor, CollisionComponent* AnotherCollisionComponent)
 {
 	OnComponentCollided(AnotherActor, AnotherCollisionComponent);
