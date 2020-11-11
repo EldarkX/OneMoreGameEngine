@@ -6,6 +6,8 @@
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 #include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
+#include "Modules/CoreModule/CollisionManager.h"
+
 #include "Player.h"
 
 #include <algorithm>
@@ -18,13 +20,17 @@ Ball::Ball(class GameEngine* gameEngine, string ObjectName)
 	Collision = AddComponent<CollisionComponent>();
 	Collision->SetCollisionType(ECollisionType::CTE_Ball);
 
+	Collision->OnComponentCollided += MakeDelegate(this, &Ball::OnCollision);
+
+	GetGameEngine()->GetCollisionManager()->AddAgent(Collision);
+
 	int mBallWidth = 16, mBallHeight = 16;
 
-	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2.,
-		gameEngine->GetWindowHeight() - gameEngine->GetPlayer()->GetActorSize().Y() - mBallHeight / 2. - 1));
-	mTransformComponent->SetSize(Vector2D(mBallWidth, mBallHeight));
+	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2.f,
+		gameEngine->GetWindowHeight() - gameEngine->GetPlayer()->GetActorSize().Y() - mBallHeight / 2.f - 1));
+	mTransformComponent->SetSize(Vector2D(static_cast<float>(mBallWidth), static_cast<float>(mBallHeight)));
 
-	mSpeed = 250;
+	mSpeed = 400;
 
 	SetVelocity(Vector2D(0, -1));
 };
@@ -52,7 +58,7 @@ void Ball::OnCollision(Actor* AnotherActor, CollisionComponent* AnotherCollision
 		{
 			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y() * -1));
 		}
-		if (minX < minY)
+		else if (minX < minY)
 		{
 			SetVelocity(Vector2D(GetVelocity().X() * -1, GetVelocity().Y()));
 		}
@@ -66,7 +72,7 @@ void Ball::OnCollision(Actor* AnotherActor, CollisionComponent* AnotherCollision
 
 }
 
-void Ball::Movement(double deltaTime)
+void Ball::Movement(float deltaTime)
 {
 	Actor::Movement(deltaTime);
 

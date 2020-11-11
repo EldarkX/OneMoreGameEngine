@@ -3,6 +3,8 @@
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 #include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
+#include "Modules/CoreModule/CollisionManager.h"
+
 Player::Player(class GameEngine* gameEngine, string ObjectName)
 	: Actor(gameEngine, ObjectName)
 {
@@ -11,17 +13,19 @@ Player::Player(class GameEngine* gameEngine, string ObjectName)
 	Collision = AddComponent<CollisionComponent>();
 	Collision->SetCollisionType(ECollisionType::CTE_Player);
 
-	int mPlayerWidth = 80, mPlayerHeight = 10;
+	GetGameEngine()->GetCollisionManager()->AddAgent(Collision);
 
-	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2, gameEngine->GetWindowHeight() - mPlayerHeight / 2));
+	float mPlayerWidth = gameEngine->GetWindowWidth() - 20.f, mPlayerHeight = 10.f;
+
+	mTransformComponent->SetPosition(Vector2D(gameEngine->GetWindowWidth() / 2.f, gameEngine->GetWindowHeight() - mPlayerHeight / 2.f));
 	mTransformComponent->SetSize(Vector2D(mPlayerWidth, mPlayerHeight));
 }
 
-void Player::Movement(double deltaTime)
+void Player::Movement(float deltaTime)
 {
 	Actor::Movement(deltaTime);
 	
-	double PlayerHalfSizeX = GetActorSize().X() / 2.;
+	float PlayerHalfSizeX = GetActorSize().X() / 2.f;
 
 	if (GetActorPosition().X() - PlayerHalfSizeX < 0)
 	{

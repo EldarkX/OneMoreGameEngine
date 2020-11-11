@@ -13,12 +13,10 @@ public:
 
 	Actor(GameEngine* gameEngine, string ObjectName);
 
-    virtual void					Tick(double deltaTime) override;
+    virtual void					Tick(float deltaTime) override;
 
 	Vector2D						GetActorPosition() const { return mTransformComponent->GetPosition(); }
 	Vector2D						GetActorSize() const { return mTransformComponent->GetSize(); }
-
-	virtual void					OnCollision(class Actor* AnotherActor, class CollisionComponent* AnotherCollisionComponent);
 
 	void							SetActorPosition(Vector2D newPosition) { mTransformComponent->SetPosition(newPosition); }
 	void							SetActorSize(Vector2D newSize) { mTransformComponent->SetSize(newSize); }
@@ -34,11 +32,13 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
-		BaseComponent* NewComponent = new T(this);
+		BaseComponent* NewComponent = new T();
+
+		NewComponent->SetOwner(this);
 
 		mComponents.push_back(NewComponent);
 
-		return NewComponent;
+		return dynamic_cast<T *>(NewComponent);
 	}
 
 	void							RemoveComponent(class BaseComponent* Component);
@@ -48,7 +48,7 @@ public:
 
 protected:
 
-	virtual void					Movement(double deltaTime);
+	virtual void					Movement(float deltaTime);
 
 	class GameEngine				*mGameEngine;
 

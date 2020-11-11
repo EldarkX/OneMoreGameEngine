@@ -80,7 +80,7 @@ void GameEngine::Tick()
 		// DELTA TIME CALCULATION
 		while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1));
 		DeltaTime = (SDL_GetTicks() - mTicksCount) / 1000.f;
-		DeltaTime = DeltaTime > 0.05 ? 0.05 : DeltaTime;
+		DeltaTime = DeltaTime > 0.05f ? 0.05f : DeltaTime;
 		mTicksCount = SDL_GetTicks();
 
 		if (DEBUG_SHOW_FPS)
@@ -135,10 +135,10 @@ void GameEngine::Tick()
 				for (auto& Actor : mActors)
 				{
 					SDL_RenderDrawLine(mRenderer,
-						Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2,
-						Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2,
-						Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2,
-						Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2);
+						static_cast<int>(Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2.f),
+						static_cast<int>(Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2.f),
+						static_cast<int>(Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2.f),
+						static_cast<int>(Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2.f));
 				}
 			}
 
@@ -174,7 +174,7 @@ void GameEngine::RemoveActor(Actor *ActorToRemove)
 {
 	mActors.erase(find(mActors.cbegin(), mActors.cend(), ActorToRemove));
 
-	delete ActorToRemove;
+	ActorToRemove->Destroy();
 }
 
 void GameEngine::AddActor(class Actor* ActorToAdd)
@@ -224,44 +224,51 @@ void GameEngine::LoadLevel(string path)
 	int mBlocksInRow = 14;
 	int rows = 5;
 
-	double offsetW = mWindow_width / 8;
-	double offsetH = mWindow_height / 10;
+	float offsetW = mWindow_width / 8.f;
+	float offsetH = mWindow_height / 10.f;
 
-	double gapW = 10;
-	double gapH = 10;
+	float gapW = 10;
+	float gapH = 10;
 
-	double blockWidth = (mWindow_width - offsetW * 2 - gapW * mBlocksInRow)
+	float blockWidth = (mWindow_width - offsetW * 2 - gapW * mBlocksInRow)
 		/ mBlocksInRow;
 
-	double blockHeight = (mWindow_height - offsetH - mWindow_height * 0.6
+	float blockHeight = (mWindow_height - offsetH - mWindow_height * 0.6f
 		- gapH * rows) / rows;
 
 	for (int row = 0; row < rows; ++row)
 	{
 		for (int col = 0; col < mBlocksInRow; ++col)
 		{
-			Actor* newBlock = new Block(this, "Block " + to_string(row * mBlocksInRow + col));
-			newBlock->SetActorPosition(Vector2D(offsetW + blockWidth * col + gapW * col, offsetH + blockHeight * row + gapH * row));
+			Block* newBlock = new Block(this, "Block " + to_string(row * mBlocksInRow + col));
+
+			newBlock->SetActorPosition(Vector2D(offsetW + blockWidth * col + gapW * col,
+				offsetH + blockHeight * row + gapH * row));
 			newBlock->SetActorSize(Vector2D(blockWidth, blockHeight));
+
+			newBlock->Collision->SetCollisionType(ECollisionType::CTE_Block);
+
+			newBlock->Sprite->SetTexture(blockTexture);
+
 			AddActor(newBlock);
 		}
 	}
 
 	Block* leftWall = new Block(this, "Left wall");
-	leftWall->SetActorPosition(Vector2D(4., mWindow_height / 2.));
-	leftWall->SetActorSize(Vector2D(8., mWindow_height));
+	leftWall->SetActorPosition(Vector2D(4.f, mWindow_height / 2.f));
+	leftWall->SetActorSize(Vector2D(8.f, static_cast<float>(mWindow_height)));
 	leftWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(leftWall);
 
 	Block* rightWall = new Block(this, "Right wall");
-	rightWall->SetActorPosition(Vector2D(mWindow_width - 4., mWindow_height / 2.));
-	rightWall->SetActorSize(Vector2D(8., mWindow_height));
+	rightWall->SetActorPosition(Vector2D(mWindow_width - 4.f, mWindow_height / 2.f));
+	rightWall->SetActorSize(Vector2D(8.f, static_cast<float>(mWindow_height)));
 	rightWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(rightWall);
 
 	Block* topWall = new Block(this, "Top wall");
-	topWall->SetActorPosition(Vector2D(mWindow_width / 2., 4.));
-	topWall->SetActorSize(Vector2D(mWindow_width, 8.));
+	topWall->SetActorPosition(Vector2D(mWindow_width / 2.f, 4.f));
+	topWall->SetActorSize(Vector2D(static_cast<float>(mWindow_width), 8.f));
 	topWall->Collision->SetCollisionType(ECollisionType::CTE_Wall);
 	AddActor(topWall);
 }

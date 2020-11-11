@@ -19,23 +19,22 @@ void CollisionManager::RemoveAgent(class CollisionComponent* Agent)
 
 void CollisionManager::CheckAllCollisions()
 {
-	for (int AgentIndex = 0, AgentsAmount = Agents.size(); AgentIndex < AgentsAmount - 1; ++AgentIndex)
+	for (size_t AgentIndex = 0, AgentsAmount = Agents.size(); AgentIndex < AgentsAmount - 1; ++AgentIndex)
 	{
-		if (Agents[AgentIndex]->GetOwner()->GetIsPendingToKill())
-			continue;
-
-		for (int AgentToCheckIndex = AgentIndex + 1; AgentToCheckIndex < AgentsAmount; ++AgentToCheckIndex)
+		if (!Agents[AgentIndex]->GetOwner()->GetIsPendingToKill())
 		{
-			if (Agents[AgentToCheckIndex]->GetIsPendingToKill())
-				continue;
-
-			Vector2D point;
-			if (AreCollided(Agents[AgentIndex], Agents[AgentToCheckIndex]))
+			for (size_t AgentToCheckIndex = AgentIndex + 1; AgentToCheckIndex < AgentsAmount; ++AgentToCheckIndex)
 			{
-				Agents[AgentIndex]->TriggerCollision(Agents[AgentToCheckIndex]->GetOwner(), Agents[AgentToCheckIndex]);
-				Agents[AgentToCheckIndex]->TriggerCollision(Agents[AgentIndex]->GetOwner(), Agents[AgentIndex]);
+				if (!Agents[AgentToCheckIndex]->GetIsPendingToKill())
+				{
+					if (AreCollided(Agents[AgentIndex], Agents[AgentToCheckIndex]))
+					{
+						Agents[AgentIndex]->TriggerCollision(Agents[AgentToCheckIndex]->GetOwner(), Agents[AgentToCheckIndex]);
+						Agents[AgentToCheckIndex]->TriggerCollision(Agents[AgentIndex]->GetOwner(), Agents[AgentIndex]);
+					}
+				}
 			}
-		}
+		}	
 	}
 }
 

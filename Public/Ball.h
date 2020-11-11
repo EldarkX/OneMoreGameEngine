@@ -11,11 +11,11 @@ public:
 	class SpriteComponent*		Sprite;
 	class CollisionComponent*	Collision;
 
-	virtual void	OnCollision(class Actor* AnotherActor, class CollisionComponent* AnotherCollisionComponent) override;
+	virtual void	OnCollision(class Actor* AnotherActor, class CollisionComponent* AnotherCollisionComponent);
 
 protected:
 
-	virtual void	Movement(double deltaTime) override;
+	virtual void	Movement(float deltaTime) override;
 
 };
 

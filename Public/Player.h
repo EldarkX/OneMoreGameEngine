@@ -13,6 +13,6 @@ public:
 	class CollisionComponent*	Collision;
 
 protected:
-	virtual void				Movement(double deltaTime) override;
+	virtual void				Movement(float deltaTime) override;
 
 };

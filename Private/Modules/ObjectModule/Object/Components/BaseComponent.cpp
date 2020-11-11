@@ -1,7 +1,6 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-void BaseComponent::Tick(double deltaTime)
+void BaseComponent::Tick(float deltaTime)
 {
-	Object::Tick(deltaTime);
 }

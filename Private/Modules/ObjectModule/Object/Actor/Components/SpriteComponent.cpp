@@ -2,7 +2,7 @@
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-void SpriteComponent::Tick(double deltaTime)
+void SpriteComponent::Tick(float deltaTime)
 {
 	if (mTexture)
 		Draw();
@@ -14,10 +14,10 @@ void SpriteComponent::Draw()
 
 	SDL_Rect info;
 
-	info.x = mOwner->GetActorPosition().X() - mOwner->GetActorSize().X() / 2;
-	info.y = mOwner->GetActorPosition().Y() - mOwner->GetActorSize().Y() / 2;
-	info.w = mOwner->GetActorSize().X();
-	info.h = mOwner->GetActorSize().Y();
+	info.x = static_cast<int>(mOwner->GetActorPosition().X() - mOwner->GetActorSize().X() / 2.f);
+	info.y = static_cast<int>(mOwner->GetActorPosition().Y() - mOwner->GetActorSize().Y() / 2.f);
+	info.w = static_cast<int>(mOwner->GetActorSize().X());
+	info.h = static_cast<int>(mOwner->GetActorSize().Y());
 
 	SDL_RenderCopy(Renderer, mTexture, NULL, &info);
 }

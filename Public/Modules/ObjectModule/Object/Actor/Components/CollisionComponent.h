@@ -7,8 +7,6 @@ class CollisionComponent : public BaseComponent
 
 public:
 
-	CollisionComponent();
-
 	ECollisionType					GetCollisionType() const { return mCollisionType; }
 	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
 
@@ -16,10 +14,10 @@ public:
 	
 	virtual void					Destroy() override;
 
+	MulticastDelegate2<class Actor*, CollisionComponent*> OnComponentCollided;
+
 private:
 
 	ECollisionType					mCollisionType;
-
-	class Actor						*mOwner;
 
 };

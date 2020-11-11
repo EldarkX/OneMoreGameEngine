@@ -54,14 +54,13 @@ public:
 
 	void							KillActors();
 
-
 	class Actor*					CreateActor(SDL_Texture* ActorTexture, Vector2D ActorPosition, Vector2D ActorSize, string ObjectName);
 
 private:
 
 	EGameStatus						mGameStatus;
 
-	double							DeltaTime;
+	float							DeltaTime;
 
 	bool							mIsActorsUpdating;
 

@@ -5,12 +5,14 @@ Object::Object(string ObjectName) : mObjectName(ObjectName)
 
 }
 
-void Object::Tick(double deltaTime)
+void Object::Tick(float deltaTime)
 {
 
 }
 
 void Object::Destroy()
 {
+	OnDestroyed(this);
+
 	delete this;
 }

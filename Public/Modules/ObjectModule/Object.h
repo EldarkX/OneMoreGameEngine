@@ -2,6 +2,10 @@
 
 #include "Modules/CoreModule/GameEngine.h"
 
+#include "Utils/Delegate/MulticastDelegate.h"
+
+using namespace DelegateLib;
+
 class Object
 {
 
@@ -9,7 +13,7 @@ public:
 
 	Object(string ObjectName = "UNKNOWN");
 
-	virtual void	Tick(double deltaTime);
+	virtual void	Tick(float deltaTime);
 
 	string			GetObjectName() const { return mObjectName; }
 	void			SetObjectName(string objName) { mObjectName = objName; }
@@ -18,6 +22,8 @@ public:
 
 	bool			GetIsPendingToKill() const { return mIsPendingToKill; }
 	void			SetIsPendingToKill(bool newIsPendingToKill) { mIsPendingToKill = newIsPendingToKill; }
+
+	MulticastDelegate1<Object*> OnDestroyed;
 
 protected:
 

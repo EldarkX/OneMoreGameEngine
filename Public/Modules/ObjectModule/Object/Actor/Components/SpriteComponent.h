@@ -7,7 +7,7 @@ class SpriteComponent : public BaseComponent
 
 public:
 
-	void			Tick(double deltaTime) override;
+	void			Tick(float deltaTime) override;
 
 	SDL_Texture		*GetTexture() const { return mTexture; }
 	void			SetTexture(SDL_Texture* newTexture) { mTexture = newTexture; }

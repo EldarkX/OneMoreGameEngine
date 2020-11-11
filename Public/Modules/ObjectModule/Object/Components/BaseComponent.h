@@ -7,15 +7,13 @@ class BaseComponent : public Object
 
 public:
 
-	BaseComponent(class Actor* newOwner) : mOwner(newOwner) {};
-
-	virtual void	Tick(double deltaTime) override;
+	virtual void	Tick(float deltaTime) override;
 
 	class Actor		*GetOwner() const { return mOwner; }
 	void			SetOwner(class Actor *newOwner) { mOwner = newOwner; }
 
 protected:
 
-	class Actor		*mOwner = nullptr;
+	class Actor		*mOwner;
 
 };
