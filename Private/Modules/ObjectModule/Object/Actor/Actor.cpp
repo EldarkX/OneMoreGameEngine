@@ -15,7 +15,9 @@ Actor::Actor(GameEngine* gameEngine, string ObjectName)
 void Actor::Tick(float deltaTime)
 {
 	for (auto Comp : mComponents)
+	{
 		Comp->Tick(deltaTime);
+	}
 
 	Movement(deltaTime);
 }
@@ -45,9 +47,19 @@ void Actor::SetIsPendingToKill(bool newIsPendingToKill)
 void Actor::Destroy()
 {
 	while (!mComponents.empty())
-		RemoveComponent(mComponents[0]);
+	{
+		RemoveComponent(mComponents.back());
+	}
 
 	Object::Destroy();
+}
+
+void Actor::BeginPlay()
+{
+	for (auto Comp : mComponents)
+	{
+		Comp->BeginPlay();
+	}
 }
 
 void Actor::Movement(float deltaTime)

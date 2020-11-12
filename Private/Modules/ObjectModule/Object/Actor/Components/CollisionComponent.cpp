@@ -7,6 +7,7 @@
 CollisionComponent::CollisionComponent(class Actor* Owner)
 	: BaseComponent(Owner)
 {
+	mCollisionType = ECollisionType::CTE_Block;
 	mOwner->GetGameEngine()->GetCollisionManager()->AddAgent(this);
 }
 
@@ -19,5 +20,5 @@ void CollisionComponent::Destroy()
 {
 	mOwner->GetGameEngine()->GetCollisionManager()->RemoveAgent(this);
 
-	Object::Destroy();
+	BaseComponent::Destroy();
 }

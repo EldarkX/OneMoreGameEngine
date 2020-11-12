@@ -3,10 +3,8 @@
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
 #include "Modules/CoreModule/CollisionManager.h"
-
-#include "Modules/ObjectModule/Object/Components/InputComponent.h"
-#include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
-#include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
+#include "Modules/CoreModule/RenderManager.h"
+#include "Modules/CoreModule/InputManager.h"
 
 #include <algorithm>
 
@@ -14,13 +12,11 @@ GameEngine::GameEngine(int window_width, int window_height)
       : mWindow_width(window_width),
         mWindow_height(window_height)
 {
-
+	mGameStatus = EGameStatus::GSE_Game;
 };
 
 int GameEngine::PreInit()
 {
-    mGameStatus = EGameStatus::GSE_Game;
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
 	{
 		cout << "Can't init SDL" << endl;
@@ -43,6 +39,14 @@ int GameEngine::PreInit()
 		return -1;
 	}
 
+	mRenderManager = new RenderManager(mRenderer);
+
+	if (!mRenderManager)
+	{
+		cout << "Can't create Render Manager" << endl;
+		return -1;
+	}
+
 	if (IMG_Init(IMG_INIT_PNG) == -1)
 	{
 		cout << "Can't init IMG" << endl;
@@ -53,14 +57,28 @@ int GameEngine::PreInit()
 
 	if (!mCollisionManager)
 	{
-		cout << "Can't create CollisionManager" << endl;
+		cout << "Can't create Collision Manager" << endl;
 		return -1;
 	}
+
+	mInputManager = new InputManager();
+
+	if (!mInputManager)
+	{
+		cout << "Can't create Input Manager" << endl;
+		return -1;
+	}
+
 	return 1;
 }
 
 void GameEngine::Tick()
 {
+	for (auto Actor : mActors)
+	{
+		Actor->BeginPlay();
+	}
+
     auto			mTicksCount = SDL_GetTicks();
 	auto			second = 0.;
 
@@ -91,16 +109,15 @@ void GameEngine::Tick()
 	    // INPUT HANDLE
 		if (SDL_PollEvent(&event))
 		{
-			handleInput(this, &event);
+			mInputManager->HandleInput(&event);
 		}
 
 		if (mGameStatus != EGameStatus::GSE_Pause)
 		{
-			//BACK BUFFER RESET
-			SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-			SDL_RenderClear(mRenderer);
+			mRenderManager->DrawBackBuffer();
 
 			//COLLISION HANDLE
+			
 			mCollisionManager->CheckAllCollisions();
 
 			//OBJECTS UPDATE
@@ -134,9 +151,11 @@ void GameEngine::Tick()
 			}
 
 			KillActors();
+			
+			//DRAWING
 
-			//FRONT BUFFER RENDER
-			SDL_RenderPresent(mRenderer);
+			mRenderManager->DrawFrontBuffer();
+			mRenderManager->SwitchBuffers();
 		}
     }
 }

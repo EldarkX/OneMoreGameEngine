@@ -4,3 +4,13 @@
 void BaseComponent::Tick(float deltaTime)
 {
 }
+
+void BaseComponent::BeginPlay()
+{
+	
+}
+
+void BaseComponent::Destroy()
+{
+	Object::Destroy();
+}

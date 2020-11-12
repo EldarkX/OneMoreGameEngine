@@ -5,6 +5,11 @@ Object::Object(string ObjectName) : mObjectName(ObjectName)
 
 }
 
+void Object::BeginPlay()
+{
+
+}
+
 void Object::Tick(float deltaTime)
 {
 

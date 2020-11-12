@@ -9,6 +9,8 @@ public:
 
 	Object(string ObjectName = "UNKNOWN");
 
+	virtual	void				BeginPlay();
+
 	virtual void				Tick(float deltaTime);
 
 	string						GetObjectName() const { return mObjectName; }

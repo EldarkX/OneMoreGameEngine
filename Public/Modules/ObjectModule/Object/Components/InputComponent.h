@@ -1,5 +1,21 @@
 #pragma once
 
-#include "Modules/CoreModule/GameEngine.h"
+#include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-void    handleInput(GameEngine* Game, const SDL_Event *event);
+class InputComponent : public BaseComponent
+{
+
+public:
+
+	InputComponent(class Actor* Owner);
+
+	virtual void ProccessInput(const SDL_Event* event);
+
+
+	virtual void Destroy() override;
+
+private:
+
+
+
+};

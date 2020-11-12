@@ -13,6 +13,8 @@ public:
 
 	Actor(GameEngine* gameEngine, string ObjectName);
 
+	virtual void					BeginPlay() override;
+
     virtual void					Tick(float deltaTime) override;
 
 	Vector2D						GetActorPosition() const { return mTransformComponent->GetPosition(); }
@@ -47,7 +49,6 @@ public:
 	}
 
 	void							RemoveComponent(class BaseComponent* Component);
-
 
 	virtual void Destroy() override;
 

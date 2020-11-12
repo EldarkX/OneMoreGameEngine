@@ -39,7 +39,10 @@ public:
 
 	SDL_Window*						GetWindow() const { return mWindow; }
 	SDL_Renderer*					GetRenderer() const { return mRenderer; }
-	class CollisionManager*			GetCollisionManager() const { return mCollisionManager; }
+
+	class CollisionManager			*GetCollisionManager() const { return mCollisionManager; }
+	class RenderManager				*GetRenderManager() const { return mRenderManager; }
+	class InputManager				*GetInputManager() const { return mInputManager; }
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
@@ -92,5 +95,6 @@ protected:
 	vector<class Actor*>			ActorsToKill;
 
 	class CollisionManager			*mCollisionManager = nullptr;
-
+	class RenderManager				*mRenderManager = nullptr;
+	class InputManager				*mInputManager = nullptr;
 };
