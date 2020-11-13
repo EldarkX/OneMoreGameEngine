@@ -7,8 +7,6 @@ class BaseComponent : public Object
 
 public:
 
-	BaseComponent(class Actor* Owner) : mOwner(Owner) {};
-
 	virtual void	Tick(float deltaTime) override;
 
 	class Actor		*GetOwner() const { return mOwner; }

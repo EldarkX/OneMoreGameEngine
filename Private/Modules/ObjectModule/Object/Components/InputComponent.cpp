@@ -4,8 +4,7 @@
 #include "Modules/CoreModule/InputManager.h"
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-InputComponent::InputComponent(class Actor* Owner)
-	: BaseComponent(Owner)
+void InputComponent::BeginPlay()
 {
 	mOwner->GetGameEngine()->GetInputManager()->AddInputComponent(this);
 }
@@ -24,3 +23,5 @@ void InputComponent::Destroy()
 
 	BaseComponent::Destroy();
 }
+
+

@@ -8,8 +8,6 @@ class Transform2DComponent : public BaseComponent
 
 public:
 
-	Transform2DComponent(class Actor* Owner) : BaseComponent(Owner) {};
-
 	void		SetPosition(Vector2D newPosition);
 	void		SetSize(Vector2D newSize);
 	void		SetAngle(float newRotationAngle);

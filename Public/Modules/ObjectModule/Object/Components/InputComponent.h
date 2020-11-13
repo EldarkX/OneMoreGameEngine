@@ -7,15 +7,12 @@ class InputComponent : public BaseComponent
 
 public:
 
-	InputComponent(class Actor* Owner);
+	virtual void BeginPlay() override;
 
 	virtual void ProccessInput(const SDL_Event* event);
-
 
 	virtual void Destroy() override;
 
 private:
-
-
 
 };

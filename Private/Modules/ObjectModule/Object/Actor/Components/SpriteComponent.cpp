@@ -3,11 +3,6 @@
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 #include "Modules/CoreModule/RenderManager.h"
 
-void SpriteComponent::Tick(float deltaTime)
-{
-
-}
-
 void SpriteComponent::Destroy()
 {
 	GetOwner()->GetGameEngine()->GetRenderManager()->RemoveDrawableComponent(this);
@@ -29,5 +24,5 @@ void SpriteComponent::Draw(SDL_Renderer* Renderer)
 	info.w = static_cast<int>(mOwner->GetActorSize().X());
 	info.h = static_cast<int>(mOwner->GetActorSize().Y());
 
-	SDL_RenderCopy(Renderer, mTexture, NULL, &info);
+	SDL_RenderCopy(Renderer, mTexture, NULL, &info);;
 }

@@ -7,16 +7,15 @@ class CollisionComponent : public BaseComponent
 
 public:
 
-	CollisionComponent(class Actor* Owner);
+	virtual void					BeginPlay() override;
 
 	ECollisionType					GetCollisionType() const { return mCollisionType; }
 	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
 
 	void							TriggerCollision(class Actor *AnotherActor, CollisionComponent *AnotherCollisionComponent);
-	
-	virtual void					Destroy() override;
-
 	MulticastDelegate2<class Actor*, CollisionComponent*> OnComponentCollided;
+
+	virtual void					Destroy() override;
 
 private:
 

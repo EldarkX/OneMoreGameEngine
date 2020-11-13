@@ -8,11 +8,7 @@ class SpriteComponent : public BaseComponent
 
 public:
 
-	SpriteComponent(class Actor* Owner) : BaseComponent(Owner) {};
-
 	virtual void	BeginPlay() override;
-
-	void			Tick(float deltaTime) override;
 
 	SDL_Texture		*GetTexture() const { return mTexture; }
 	void			SetTexture(SDL_Texture* newTexture) { mTexture = newTexture; }
@@ -23,12 +19,12 @@ public:
 
 	virtual void	Destroy() override;
 
-private:
+protected:
 
 	virtual void	Draw(SDL_Renderer* Renderer);
 
-	SDL_Texture		*mTexture = nullptr;
-
 	int				mDrawOrder = 100;
+
+	SDL_Texture		*mTexture = nullptr;
 
 };

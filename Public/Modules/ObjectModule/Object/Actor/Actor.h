@@ -34,12 +34,14 @@ public:
 	bool							GetIsPendingToKill() const { return mIsPendingToKill; }
 	void							SetIsPendingToKill(bool newIsPendingToKill);
 
+	vector<class BaseComponent*>	GetComponents() const { return mComponents; }
+
 	MulticastDelegate1<Actor*>		OnStartBeingPendingToKill;
 
 	template<class T>
 	T* AddComponent()
 	{
-		BaseComponent* NewComponent = new T(this);
+		BaseComponent* NewComponent = new T();
 
 		NewComponent->SetOwner(this);
 
