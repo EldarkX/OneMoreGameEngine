@@ -3,12 +3,12 @@
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 #include "Modules/ObjectModule/Object/Actor/Components/CollisionComponent.h"
 
+#include <algorithm>
+
 Actor::Actor(GameEngine* gameEngine, string ObjectName)
 	: Object(ObjectName), mGameEngine(gameEngine)
 {
 	mTransformComponent = AddComponent<Transform2DComponent>();
-	
-    mSpeed = 270;
 }
 
 
@@ -18,13 +18,6 @@ void Actor::Tick(float deltaTime)
 	{
 		Comp->Tick(deltaTime);
 	}
-
-	Movement(deltaTime);
-}
-
-void Actor::SetSpeed(float newSpeed)
-{
-	mSpeed = newSpeed;
 }
 
 void Actor::RemoveComponent(BaseComponent* Component)
@@ -60,10 +53,4 @@ void Actor::BeginPlay()
 	{
 		Comp->BeginPlay();
 	}
-}
-
-void Actor::Movement(float deltaTime)
-{
-	mTransformComponent->SetPosition(mTransformComponent->GetPosition() +
-        Vector2D(mVelocity * mSpeed * deltaTime));
 }

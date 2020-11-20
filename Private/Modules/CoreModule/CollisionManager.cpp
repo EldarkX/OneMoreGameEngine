@@ -19,7 +19,7 @@ void CollisionManager::RemoveAgent(class CollisionComponent* Agent)
 
 void CollisionManager::CheckAllCollisions()
 {
-	for (size_t AgentIndex = 0, AgentsAmount = Agents.size(); AgentIndex < AgentsAmount - 1; ++AgentIndex)
+	for (size_t AgentIndex = 0, AgentsAmount = Agents.size(); AgentIndex + 1 < AgentsAmount; ++AgentIndex)
 	{
 		if (!Agents[AgentIndex]->GetOwner()->GetIsPendingToKill())
 		{

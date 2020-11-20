@@ -13,6 +13,11 @@ GameEngine::GameEngine(int window_width, int window_height)
         mWindow_height(window_height)
 {
 	mGameStatus = EGameStatus::GSE_Game;
+	if (PreInit() == -1)
+	{
+		delete this;
+		exit(-1);
+	}
 };
 
 int GameEngine::PreInit()

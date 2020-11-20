@@ -23,12 +23,6 @@ public:
 	void							SetActorPosition(Vector2D newPosition) { mTransformComponent->SetPosition(newPosition); }
 	void							SetActorSize(Vector2D newSize) { mTransformComponent->SetSize(newSize); }
 
-    float							GetSpeed() const { return mSpeed; }
-    void							SetSpeed(float newSpeed);
-
-    inline Vector2D					GetVelocity() const { return mVelocity; }
-	void							SetVelocity(Vector2D newVelocity) { mVelocity = newVelocity; }
-
 	class GameEngine				*GetGameEngine() const { return mGameEngine; }
 
 	bool							GetIsPendingToKill() const { return mIsPendingToKill; }
@@ -56,16 +50,11 @@ public:
 
 protected:
 
-	virtual void					Movement(float deltaTime);
-
 	class GameEngine				*mGameEngine;
 
 	vector<class BaseComponent*>	mComponents;
 
 	class Transform2DComponent		*mTransformComponent;
-
-    float							mSpeed;
-    Vector2D						mVelocity;
 
 	bool			mIsPendingToKill = false;
 

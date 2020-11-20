@@ -19,7 +19,7 @@ private:
 	struct BGTexture
 	{
 		SDL_Texture				*mTexture;
-		int						mOffsetX;
+		float					mOffsetX;
 	};
 	vector<BGTexture>			mBGTextures;
 
