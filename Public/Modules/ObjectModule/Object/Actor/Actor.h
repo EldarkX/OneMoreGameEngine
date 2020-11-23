@@ -17,6 +17,8 @@ public:
 
     virtual void					Tick(float deltaTime) override;
 
+	class Transform2DComponent		*GetActorTransform() const { return mTransformComponent; }
+
 	Vector2D						GetActorPosition() const { return mTransformComponent->GetPosition(); }
 	Vector2D						GetActorSize() const { return mTransformComponent->GetSize(); }
 

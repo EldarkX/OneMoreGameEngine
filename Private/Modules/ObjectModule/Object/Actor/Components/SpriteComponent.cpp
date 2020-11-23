@@ -24,5 +24,5 @@ void SpriteComponent::Draw(SDL_Renderer* Renderer)
 	info.w = static_cast<int>(mOwner->GetActorSize().X());
 	info.h = static_cast<int>(mOwner->GetActorSize().Y());
 
-	SDL_RenderCopy(Renderer, mTexture, NULL, &info);;
+	SDL_RenderCopyEx(Renderer, mTexture, NULL, &info, mOwner->GetActorTransform()->GetAngle(), nullptr, SDL_FLIP_NONE);
 }
