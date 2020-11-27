@@ -1,7 +1,7 @@
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
-#include "Modules/CoreModule/RenderManager.h"
+#include "Modules/RenderModule/RenderManager.h"
 
 void SpriteComponent::Destroy()
 {

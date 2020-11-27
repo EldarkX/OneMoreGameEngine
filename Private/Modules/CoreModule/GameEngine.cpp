@@ -3,7 +3,7 @@
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
 #include "Modules/CoreModule/CollisionManager.h"
-#include "Modules/CoreModule/RenderManager.h"
+#include "Modules/RenderModule/RenderManager.h"
 #include "Modules/CoreModule/InputManager.h"
 
 #include <algorithm>

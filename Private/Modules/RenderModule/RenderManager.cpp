@@ -1,5 +1,5 @@
 
-#include "Modules/CoreModule/RenderManager.h"
+#include "Modules/RenderModule/RenderManager.h"
 
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 
