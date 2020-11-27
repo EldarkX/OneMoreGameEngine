@@ -2,6 +2,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "glew.h"
 
 #include <iostream>
 #include <vector>
@@ -84,6 +85,7 @@ protected:
 
     SDL_Window						*mWindow;
     SDL_Renderer					*mRenderer;
+	SDL_GLContext					mContext;
 
     SDL_Event						event;
 

@@ -11,8 +11,9 @@ RenderManager::RenderManager(SDL_Renderer* Renderer)
 
 void RenderManager::DrawBackBuffer()
 {
-	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(mRenderer);
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	// Clear the color buffer
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void RenderManager::DrawFrontBuffer()
