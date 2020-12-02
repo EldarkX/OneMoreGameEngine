@@ -54,12 +54,12 @@ void AnimSpriteComponent::AddAnimation(string name, string path, unsigned int fr
 
 	Animation* newAnim = new Animation(animFPS, priority, isLooping);
 
-	for (unsigned int i = 1; i <= framesAmount; ++i)
-	{
-		zero = i < 10 ? "0" : "";
-		new_path = path + zero + std::to_string(i) + ".png";
-		newAnim->mTextures.push_back(IMG_LoadTexture(GetOwner()->GetGameEngine()->GetRenderer(), new_path.c_str()));
-	}
+	//for (unsigned int i = 1; i <= framesAmount; ++i)
+	//{
+	//	zero = i < 10 ? "0" : "";
+	//	new_path = path + zero + std::to_string(i) + ".png";
+	//	newAnim->mTextures.push_back(IMG_LoadTexture(GetOwner()->GetGameEngine()->GetRenderer(), new_path.c_str()));
+	//}
 
 	newAnim->mTexturesAmount = newAnim->mTextures.size();
 

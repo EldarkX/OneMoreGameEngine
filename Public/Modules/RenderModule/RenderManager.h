@@ -7,7 +7,7 @@ class RenderManager
 
 public:
 
-	RenderManager(SDL_Renderer* Renderer);
+	RenderManager(GameEngine *gameEngine);
 
 	void							DrawBackBuffer();
 
@@ -21,8 +21,10 @@ public:
 
 private:
 
-	SDL_Renderer					*mRenderer;
-
 	vector<class SpriteComponent *>	mDrawableComponents;
 
+	class VertexArray				*mSpriteVerts;
+	class Shader					*mSpriteShader;
+
+	GameEngine						*mGameEngine;
 };

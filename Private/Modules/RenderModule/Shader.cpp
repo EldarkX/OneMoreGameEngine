@@ -50,7 +50,9 @@ bool Shader::CompileShader(const string& fileName, GLenum shaderType, GLuint& ou
 
 		sstream << shaderFile.rdbuf();
 		
-		const char* contentsChar = sstream.str().c_str();
+		string tmp = sstream.str();
+
+		const char* contentsChar = tmp.c_str();
 
 		outShader = glCreateShader(shaderType);
 
@@ -75,33 +77,33 @@ bool Shader::CompileShader(const string& fileName, GLenum shaderType, GLuint& ou
 
 bool Shader::IsCompiled(GLuint shader)
 {
-	GLint status;
-
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-	if (status != GL_TRUE)
-	{
-		char buffer[128];
-		memset(buffer, 0, 128);
-		glGetShaderInfoLog(shader, 127, nullptr, buffer);
-		SDL_Log("GLSL compile failed: %s\n", buffer);
-		return false;
-	}
-	return true;
+	return CheckIsValid(GL_COMPILE_STATUS, false, &shader, "GLSL compile failed: %s\n");
 }
 
 bool Shader::IsValidProgram()
 {
+	return CheckIsValid(GL_LINK_STATUS, true, &mShaderProgram, "GLSL compile failed: %s\n");
+}
+
+bool Shader::CheckIsValid(GLenum checkParam, bool isProgram, GLuint *entity, string errorMsg)
+{
 	GLint status;
 
-	glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &status);
+	if (isProgram)
+		glGetProgramiv(*entity, checkParam, &status);
+	else
+		glGetShaderiv(*entity, checkParam, &status);
 
 	if (status != GL_TRUE)
 	{
-		char buffer[128];
-		memset(buffer, 0, 128);
-		glGetProgramInfoLog(mShaderProgram, 127, nullptr, buffer);
-		SDL_Log("GLSL compile failed: %s\n", buffer);
+		const size_t size = 512;
+		char buffer[size];
+		memset(buffer, 0, size);
+		if (isProgram)
+			glGetProgramInfoLog(*entity, size - 1, nullptr, buffer);
+		else
+			glGetShaderInfoLog(*entity, size - 1, nullptr, buffer);
+		SDL_Log(errorMsg.c_str(), buffer);
 		return false;
 	}
 	return true;

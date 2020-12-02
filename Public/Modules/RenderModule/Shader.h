@@ -26,6 +26,8 @@ private:
 
 	bool	IsValidProgram();
 
+	bool	CheckIsValid(GLenum checkParam, bool isProgram, GLuint* entity, string errorMsg);
+
 	GLuint	mVertexShader;
 	GLuint	mFragShader;
 	GLuint	mShaderProgram;

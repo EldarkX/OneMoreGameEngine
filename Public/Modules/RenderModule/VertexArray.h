@@ -7,7 +7,7 @@ class VertexArray
 
 public:
 
-	VertexArray(const float* verts, unsigned int numVerts, unsigned int* indices, unsigned int numIndices);
+	VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices, unsigned int numIndices);
 
 	void SetActive();
 
@@ -22,7 +22,7 @@ private:
 	unsigned int mNumIndices;
 	//stores ID
 	unsigned int mVertexBuffer;
-	unsigned int mIndicesBuffer;
+	unsigned int mIndexBuffer;
 	unsigned int mVertexArray;
 
 

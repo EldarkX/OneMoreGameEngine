@@ -21,7 +21,7 @@ public:
 
 protected:
 
-	virtual void	Draw(SDL_Renderer* Renderer);
+	virtual void	Draw(class Shader* shader);
 
 	int				mDrawOrder = 100;
 

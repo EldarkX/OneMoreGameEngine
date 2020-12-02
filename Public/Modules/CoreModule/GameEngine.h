@@ -4,14 +4,18 @@
 #include "SDL_image.h"
 #include "glew.h"
 
+#include <Windows.h>
+
 #include <iostream>
 #include <vector>
 #include <string>
+#include <assert.h>
 
 #include "Modules/MathModule/Vector2D.h"
 #include "DataTypes.h"
 
 #include "Utils/Delegate/MulticastDelegate.h"
+#include "Utils/AssetManager/AssetsManagerUtils.h"
 
 using namespace DelegateLib;
 
@@ -39,11 +43,11 @@ public:
 	virtual void					Tick();
 
 	SDL_Window*						GetWindow() const { return mWindow; }
-	SDL_Renderer*					GetRenderer() const { return mRenderer; }
 
 	class CollisionManager			*GetCollisionManager() const { return mCollisionManager; }
 	class RenderManager				*GetRenderManager() const { return mRenderManager; }
 	class InputManager				*GetInputManager() const { return mInputManager; }
+	class AssetsManagerUtils		*GetAssetsManagerUtils() const { return mAssetsManagerUtils; }
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
@@ -81,10 +85,9 @@ protected:
 
 	float							DeltaTime;
 
-	bool							mIsActorsUpdating;
+	bool							mIsActorsUpdating = false;
 
     SDL_Window						*mWindow;
-    SDL_Renderer					*mRenderer;
 	SDL_GLContext					mContext;
 
     SDL_Event						event;
@@ -99,4 +102,5 @@ protected:
 	class CollisionManager			*mCollisionManager = nullptr;
 	class RenderManager				*mRenderManager = nullptr;
 	class InputManager				*mInputManager = nullptr;
+	class AssetsManagerUtils		*mAssetsManagerUtils = nullptr;
 };

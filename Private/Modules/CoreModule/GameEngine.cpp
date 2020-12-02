@@ -64,21 +64,11 @@ int GameEngine::PreInit()
 		return false;
 	}
 
-    mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	mAssetsManagerUtils = new AssetsManagerUtils();
+	assert(mAssetsManagerUtils != nullptr);
 
-	if (!mRenderer)
-	{
-		cout << "Can't create SDL_Renderer" << endl;
-		return -1;
-	}
-
-	mRenderManager = new RenderManager(mRenderer);
-
-	if (!mRenderManager)
-	{
-		cout << "Can't create Render Manager" << endl;
-		return -1;
-	}
+	mRenderManager = new RenderManager(this);
+	assert(mRenderManager != nullptr);
 
 	if (IMG_Init(IMG_INIT_PNG) == -1)
 	{
@@ -87,20 +77,10 @@ int GameEngine::PreInit()
 	}
 
 	mCollisionManager = new CollisionManager();
-
-	if (!mCollisionManager)
-	{
-		cout << "Can't create Collision Manager" << endl;
-		return -1;
-	}
+	assert(mCollisionManager != nullptr);
 
 	mInputManager = new InputManager();
-
-	if (!mInputManager)
-	{
-		cout << "Can't create Input Manager" << endl;
-		return -1;
-	}
+	assert(mInputManager != nullptr);
 
 	return 1;
 }
@@ -147,8 +127,6 @@ void GameEngine::Tick()
 
 		if (mGameStatus != EGameStatus::GSE_Pause)
 		{
-			mRenderManager->DrawBackBuffer();
-
 			//COLLISION HANDLE
 			
 			mCollisionManager->CheckAllCollisions();
@@ -169,24 +147,25 @@ void GameEngine::Tick()
 
 			mNewActors.clear();
 
-			if (DEBUG_COLLISIONS)
-			{
-				SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+			//if (DEBUG_COLLISIONS)
+			//{
+			//	SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
-				for (auto& Actor : mActors)
-				{
-					SDL_RenderDrawLine(mRenderer,
-						static_cast<int>(Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2.f),
-						static_cast<int>(Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2.f),
-						static_cast<int>(Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2.f),
-						static_cast<int>(Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2.f));
-				}
-			}
+			//	for (auto& Actor : mActors)
+			//	{
+			//		SDL_RenderDrawLine(mRenderer,
+			//			static_cast<int>(Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2.f),
+			//			static_cast<int>(Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2.f),
+			//			static_cast<int>(Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2.f),
+			//			static_cast<int>(Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2.f));
+			//	}
+			//}
 
 			KillActors();
 			
 			//DRAWING
 
+			mRenderManager->DrawBackBuffer();
 			mRenderManager->DrawFrontBuffer();
 			mRenderManager->SwitchBuffers();
 		}
@@ -236,9 +215,6 @@ GameEngine::~GameEngine()
 
 	if (mCollisionManager)
 		delete mCollisionManager;
-
-	if (mRenderer)
-		SDL_DestroyRenderer(mRenderer);
 
 	if (mContext)
 		SDL_GL_DeleteContext(mContext);

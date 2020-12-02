@@ -3,6 +3,8 @@
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 #include "Modules/RenderModule/RenderManager.h"
 
+#include "Modules/RenderModule/Shader.h"
+
 void SpriteComponent::Destroy()
 {
 	GetOwner()->GetGameEngine()->GetRenderManager()->RemoveDrawableComponent(this);
@@ -15,14 +17,7 @@ void SpriteComponent::BeginPlay()
 	GetOwner()->GetGameEngine()->GetRenderManager()->AddDrawableComponent(this);
 }
 
-void SpriteComponent::Draw(SDL_Renderer* Renderer)
+void SpriteComponent::Draw(Shader* shader)
 {
-	SDL_Rect info;
-
-	info.x = static_cast<int>(mOwner->GetActorPosition().X() - mOwner->GetActorSize().X() / 2.f);
-	info.y = static_cast<int>(mOwner->GetActorPosition().Y() - mOwner->GetActorSize().Y() / 2.f);
-	info.w = static_cast<int>(mOwner->GetActorSize().X());
-	info.h = static_cast<int>(mOwner->GetActorSize().Y());
-
-	SDL_RenderCopyEx(Renderer, mTexture, NULL, &info, mOwner->GetActorTransform()->GetAngle(), nullptr, SDL_FLIP_NONE);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }

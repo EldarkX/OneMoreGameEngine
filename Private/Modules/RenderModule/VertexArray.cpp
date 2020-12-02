@@ -1,7 +1,8 @@
 
 #include "Modules/RenderModule/VertexArray.h"
 
-VertexArray::VertexArray(const float* verts, unsigned int numVerts, unsigned int* indices, unsigned int numIndices)
+VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices, unsigned int numIndices)
+	: mNumVerts(numVerts), mNumIndices(numIndices)
 {
 	//create vertex array
 	glGenVertexArrays(1, &mVertexArray);
@@ -11,13 +12,13 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, unsigned int
 	glGenBuffers(1, &mVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
 
-	glBufferData(GL_ARRAY_BUFFER, numVerts * 3 * sizeof(float), verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(mNumVerts) * 3 * sizeof(float), verts, GL_STATIC_DRAW);
 
 	//Create indices buffer
-	glGenBuffers(1, &mIndicesBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicesBuffer);
+	glGenBuffers(1, &mIndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mNumIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 
@@ -32,7 +33,7 @@ void VertexArray::SetActive()
 VertexArray::~VertexArray()
 {
 	glDeleteBuffers(1, &mVertexBuffer);
-	glDeleteBuffers(1, &mIndicesBuffer);
+	glDeleteBuffers(1, &mIndexBuffer);
 	glDeleteVertexArrays(1, &mVertexArray);
 }
 
