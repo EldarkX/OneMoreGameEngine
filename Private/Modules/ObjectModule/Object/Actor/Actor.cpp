@@ -49,8 +49,5 @@ void Actor::Destroy()
 
 void Actor::BeginPlay()
 {
-	for (auto Comp : mComponents)
-	{
-		Comp->BeginPlay();
-	}
+
 }

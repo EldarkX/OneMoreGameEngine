@@ -87,11 +87,6 @@ int GameEngine::PreInit()
 
 void GameEngine::Tick()
 {
-	for (auto Actor : mActors)
-	{
-		Actor->BeginPlay();
-	}
-
     auto			mTicksCount = SDL_GetTicks();
 	auto			second = 0.;
 

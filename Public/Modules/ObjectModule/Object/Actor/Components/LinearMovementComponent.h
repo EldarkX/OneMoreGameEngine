@@ -19,7 +19,7 @@ public:
 
 private:
 
-	float							mSpeed;
+	float							mSpeed = 0;
 	Vector2D						mVelocity;
 
 };

@@ -12,6 +12,8 @@
 #include <assert.h>
 
 #include "Modules/MathModule/Vector2D.h"
+#include "Modules/MathModule/Matrix4.h"
+
 #include "DataTypes.h"
 
 #include "Utils/Delegate/MulticastDelegate.h"
@@ -71,6 +73,8 @@ public:
 		NewActor->SetActorSize(ActorSize);
 
 		NewActor->OnStartBeingPendingToKill += MakeDelegate(this, &GameEngine::AddObjectToKill);
+
+		NewActor->BeginPlay();
 
 		AddActor(NewActor);
 

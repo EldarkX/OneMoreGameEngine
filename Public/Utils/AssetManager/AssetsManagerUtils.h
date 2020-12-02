@@ -14,11 +14,11 @@ public:
 		if (mProjectDir.empty())
 		{
 			char result[MAX_PATH];
-			 (NULL, result, MAX_PATH);
+			GetModuleFileName(NULL, result, MAX_PATH);
 
-			string ProjectPath(result);
+			string ProjectPath = result;
 
-			ProjectPath.erase(ProjectPath.find("\\x64\\Debug"));
+			ProjectPath.erase(ProjectPath.find("\\x64\\"));
 
 			mProjectDir = ProjectPath;
 		}

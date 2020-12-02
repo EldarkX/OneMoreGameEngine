@@ -22,7 +22,7 @@ public:
 
 private:
 
-	float z_;
+	float z_ = 0;
 
 };
 

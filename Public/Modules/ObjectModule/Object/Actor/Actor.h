@@ -41,6 +41,8 @@ public:
 
 		NewComponent->SetOwner(this);
 
+		NewComponent->BeginPlay();
+
 		mComponents.push_back(NewComponent);
 
 		return dynamic_cast<T *>(NewComponent);

@@ -30,8 +30,8 @@ public:
 
 protected:
 
-    float x_;
-    float y_;
+    float x_ = 0;
+    float y_ = 0;
 
 };
 

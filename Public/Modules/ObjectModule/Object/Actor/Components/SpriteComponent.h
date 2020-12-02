@@ -11,7 +11,7 @@ public:
 	virtual void	BeginPlay() override;
 
 	SDL_Texture		*GetTexture() const { return mTexture; }
-	void			SetTexture(SDL_Texture* newTexture) { mTexture = newTexture; }
+	void			SetTexture(SDL_Texture* newTexture);
 	
 	int				GetDrawOrder() const { return mDrawOrder; }
 	void			SetDrawOrder(int newDrawOrder) { mDrawOrder = newDrawOrder; }
@@ -26,5 +26,7 @@ protected:
 	int				mDrawOrder = 100;
 
 	SDL_Texture		*mTexture = nullptr;
+	int				mTexWidth = 0;
+	int				mTexHeight = 0;
 
 };

@@ -19,6 +19,8 @@ public:
 
 	void							RemoveDrawableComponent(class SpriteComponent *);
 
+	Matrix4D						CreateSimpleViewProj(float width, float height);
+
 private:
 
 	vector<class SpriteComponent *>	mDrawableComponents;

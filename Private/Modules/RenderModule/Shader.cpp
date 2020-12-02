@@ -7,11 +7,6 @@
 
 using std::ifstream;
 
-Shader::Shader()
-{
-
-}
-
 bool Shader::Load(const string& vertName, const string& fragName)
 {
 	if (!CompileShader(vertName, GL_VERTEX_SHADER, mVertexShader)
@@ -26,6 +21,18 @@ bool Shader::Load(const string& vertName, const string& fragName)
 	glLinkProgram(mShaderProgram);
 	
 	return IsValidProgram();
+}
+
+void Shader::SetMatrixUniform(const char* paramName, const Matrix4D& paramValue)
+{
+	GLuint loc = glGetUniformLocation(mShaderProgram, paramName);
+
+	float array[16];
+	for (int i = 0, k = 0; i < 4; ++i)
+		for (int j = 0; j < 4; ++j, ++k)
+			array[k] = paramValue[i][j];
+
+	glUniformMatrix4fv(loc, 1, GL_TRUE, array);//paramValue.GetAsFloatPtr());
 }
 
 void Shader::SetActive()

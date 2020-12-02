@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Modules/MathModule/Vector2D.h"
+#include "Modules/MathModule/Matrix4.h"
+
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
 class Transform2DComponent : public BaseComponent
@@ -15,8 +17,20 @@ public:
 	Vector2D	GetPosition() const { return mPosition; }
 	Vector2D	GetSize() const { return mSize; }
 	float		GetAngle() const { return mRotationAngle; }
-		
+
+	virtual void BeginPlay() override;
+
+	Matrix4D	GetComputedTransform() const;
+
 private:
+
+	void		ComputeTransform();
+
+	Matrix4D	mComputedTransform;
+
+	Matrix4D	mTransfromPosition;
+	Matrix4D	mTransfromRotation;
+	Matrix4D	mTransfromScale;
 
 	Vector2D	mPosition;
 	Vector2D	mSize;

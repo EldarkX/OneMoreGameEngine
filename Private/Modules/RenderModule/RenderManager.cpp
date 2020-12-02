@@ -18,13 +18,14 @@ RenderManager::RenderManager(GameEngine* gameEngine)
 		cout << "Shader hasn't been loaded!" << endl;
 		exit(-1);
 	}
+
 	mSpriteShader->SetActive();
 
 	float vertexBuffer[] = {
-		-0.25f, 0.25f, 0.f,
-		0.25f, 0.25f, 0.f,
-		0.25f, -0.25f, 0.f,
-		-0.25f, -0.25f, 0.f
+		-0.5f, 0.5f, 0.f,
+		0.5f, 0.5f, 0.f,
+		0.5f, -0.5f, 0.f,
+		-0.5f, -0.5f, 0.f
 	};
 
 	unsigned int indexBuffer[] = {
@@ -33,6 +34,11 @@ RenderManager::RenderManager(GameEngine* gameEngine)
 	};
 
 	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+	mSpriteVerts->SetActive();
+
+	Matrix4D viewProj = CreateSimpleViewProj(static_cast<float>(gameEngine->GetWindowWidth()),
+		static_cast<float>(gameEngine->GetWindowHeight()));
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
 }
 
 void RenderManager::DrawBackBuffer()
@@ -79,5 +85,15 @@ void RenderManager::AddDrawableComponent(class SpriteComponent *NewSprite)
 void RenderManager::RemoveDrawableComponent(class SpriteComponent *Sprite)
 {
 	mDrawableComponents.erase(find(mDrawableComponents.cbegin(), mDrawableComponents.cend(), Sprite));
+}
+
+Matrix4D RenderManager::CreateSimpleViewProj(float width, float height)
+{
+	return Matrix4D({
+		{ 2.0f / width, 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 2.0f / height, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f, 1.0f }
+	});
 }
 

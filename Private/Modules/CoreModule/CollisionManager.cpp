@@ -11,7 +11,6 @@ void CollisionManager::AddAgent(class CollisionComponent* Agent)
 	Agents.push_back(Agent);
 }
 
-
 void CollisionManager::RemoveAgent(class CollisionComponent* Agent)
 {
 	Agents.erase(find(Agents.cbegin(), Agents.cend(), Agent));

@@ -3,6 +3,8 @@
 #include "glew.h"
 #include <string>
 
+#include "Modules/MathModule/Matrix4.h"
+
 using std::string;
 
 class Shader
@@ -10,9 +12,11 @@ class Shader
 
 public:
 
-	Shader();
+	Shader() = default;
 
 	bool	Load(const string& vertName, const string& fragName);
+
+	void	SetMatrixUniform(const char* paramName, const Matrix4D& paramValue);
 
 	void	SetActive();
 
@@ -28,8 +32,8 @@ private:
 
 	bool	CheckIsValid(GLenum checkParam, bool isProgram, GLuint* entity, string errorMsg);
 
-	GLuint	mVertexShader;
-	GLuint	mFragShader;
-	GLuint	mShaderProgram;
+	GLuint	mVertexShader = 0;
+	GLuint	mFragShader = 0;
+	GLuint	mShaderProgram = 0;
 
 };
