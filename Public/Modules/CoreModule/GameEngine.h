@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "glew.h"
+#include "SOIL/SOIL.h"
 
 #include <Windows.h>
 
@@ -81,7 +82,7 @@ public:
 		return static_cast<T *>(NewActor);
 	}
 
-	~GameEngine();
+	virtual							~GameEngine();
 
 protected:
 

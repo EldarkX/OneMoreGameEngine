@@ -4,6 +4,7 @@
 #include "Modules/RenderModule/RenderManager.h"
 
 #include "Modules/RenderModule/Shader.h"
+#include "Modules/RenderModule/Texture.h"
 
 void SpriteComponent::Destroy()
 {
@@ -17,11 +18,9 @@ void SpriteComponent::BeginPlay()
 	GetOwner()->GetGameEngine()->GetRenderManager()->AddDrawableComponent(this);
 }
 
-void SpriteComponent::SetTexture(SDL_Texture* newTexture)
+void SpriteComponent::SetTexture(Texture* newTexture)
 {
 	mTexture = newTexture;
-
-	SDL_QueryTexture(mTexture, nullptr, nullptr, &mTexWidth, &mTexHeight);
 }
 
 void SpriteComponent::Draw(Shader* shader)
@@ -29,6 +28,9 @@ void SpriteComponent::Draw(Shader* shader)
 	Matrix4D scale = Matrix4D::OneMatrix();
 	scale[0][0] = static_cast<float>(60);
 	scale[1][1] = static_cast<float>(60);
+
+	if (mTexture)
+		mTexture->SetActive();
 
 	Matrix4D world = scale * mOwner->GetActorTransform()->GetComputedTransform();
 

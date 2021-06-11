@@ -42,7 +42,7 @@ void AnimSpriteComponent::Tick(float deltaTime)
 			}
 		}
 
-		SetTexture(mCurrentAnimation.second->mTextures[static_cast<int>(mCurrentFrame)]);
+		//SetTexture(mCurrentAnimation.second->mTextures[static_cast<int>(mCurrentFrame)]);
 	}
 }
 

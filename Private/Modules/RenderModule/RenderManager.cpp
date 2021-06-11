@@ -22,10 +22,10 @@ RenderManager::RenderManager(GameEngine* gameEngine)
 	mSpriteShader->SetActive();
 
 	float vertexBuffer[] = {
-		-0.5f, 0.5f, 0.f,
-		0.5f, 0.5f, 0.f,
-		0.5f, -0.5f, 0.f,
-		-0.5f, -0.5f, 0.f
+		-0.5f, 0.5f, 0.f, 0.f, 0.f,
+		0.5f, 0.5f, 0.f, 1.f, 0.f,
+		0.5f, -0.5f, 0.f, 1.f, 1.f,
+		-0.5f, -0.5f, 0.f, 0.f, 1.f
 	};
 
 	unsigned int indexBuffer[] = {
