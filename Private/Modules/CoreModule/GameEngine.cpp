@@ -8,16 +8,26 @@
 
 #include <algorithm>
 
+GameEngine* GameEngine::thisGameEngine = nullptr;
+
 GameEngine::GameEngine(int window_width, int window_height)
       : mWindow_width(window_width),
         mWindow_height(window_height)
 {
+	mWindow_halfWidth = mWindow_width / 2;
+	mWindow_halfHeight = mWindow_height / 2;
+
 	mGameStatus = EGameStatus::GSE_Game;
 	if (PreInit() == -1)
 	{
 		delete this;
 		exit(-1);
 	}
+
+	if (thisGameEngine)
+		static_assert(1);
+	else
+		thisGameEngine = this;
 };
 
 int GameEngine::PreInit()
@@ -128,9 +138,9 @@ void GameEngine::Tick()
 			//OBJECTS UPDATE
 
 			mIsActorsUpdating = true;
-			for (auto& Actor : mActors)
+			for (auto& AActor : mActors)
 			{
-				Actor->Tick(DeltaTime);
+				AActor->Tick(DeltaTime);
 			}
 			mIsActorsUpdating = false;
 
@@ -145,13 +155,13 @@ void GameEngine::Tick()
 			//{
 			//	SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
-			//	for (auto& Actor : mActors)
+			//	for (auto& AActor : mActors)
 			//	{
 			//		SDL_RenderDrawLine(mRenderer,
-			//			static_cast<int>(Actor->GetActorPosition().X() - Actor->GetActorSize().X() / 2.f),
-			//			static_cast<int>(Actor->GetActorPosition().Y() - Actor->GetActorSize().Y() / 2.f),
-			//			static_cast<int>(Actor->GetActorPosition().X() + Actor->GetActorSize().X() / 2.f),
-			//			static_cast<int>(Actor->GetActorPosition().Y() + Actor->GetActorSize().Y() / 2.f));
+			//			static_cast<int>(AActor->GetActorPosition().X() - AActor->GetActorSize().X() / 2.f),
+			//			static_cast<int>(AActor->GetActorPosition().Y() - AActor->GetActorSize().Y() / 2.f),
+			//			static_cast<int>(AActor->GetActorPosition().X() + AActor->GetActorSize().X() / 2.f),
+			//			static_cast<int>(AActor->GetActorPosition().Y() + AActor->GetActorSize().Y() / 2.f));
 			//	}
 			//}
 
@@ -166,14 +176,14 @@ void GameEngine::Tick()
     }
 }
 
-void GameEngine::RemoveActor(Actor *ActorToRemove)
+void GameEngine::RemoveActor(AActor *ActorToRemove)
 {
 	mActors.erase(find(mActors.cbegin(), mActors.cend(), ActorToRemove));
 
 	ActorToRemove->Destroy();
 }
 
-void GameEngine::AddActor(class Actor* ActorToAdd)
+void GameEngine::AddActor(class AActor* ActorToAdd)
 {
 	if (mIsActorsUpdating)
 	{
@@ -189,10 +199,15 @@ void GameEngine::KillActors()
 {
 	while (!ActorsToKill.empty())
 	{
-		Actor *a = ActorsToKill.back();
+		AActor *a = ActorsToKill.back();
 		ActorsToKill.pop_back();
 		RemoveActor(a);
 	}
+}
+
+GameEngine *GameEngine::GameEngine::GetGameEngine()
+{
+	return thisGameEngine;
 }
 
 GameEngine::~GameEngine()

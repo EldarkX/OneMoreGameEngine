@@ -3,12 +3,15 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "glew.h"
-#include "SOIL/SOIL.h"
+
 
 #include <Windows.h>
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <set>
+#include <algorithm>
 #include <string>
 #include <assert.h>
 
@@ -30,7 +33,7 @@ using std::string;
 using std::to_string;
 
 #define  DEBUG_COLLISIONS 0
-#define  DEBUG_SHOW_FPS 0
+#define  DEBUG_SHOW_FPS 1
 
 class GameEngine
 {
@@ -38,6 +41,11 @@ class GameEngine
 public:
 
 	GameEngine(int window_width, int window_height);
+	GameEngine(GameEngine& gameEngine) = delete;
+	GameEngine(GameEngine&& gameEngine) = delete;
+	
+	void operator=(const GameEngine& gameEngine) = delete;
+	void operator=(const GameEngine&& gameEngine) = delete;
 
 	int								PreInit();
 
@@ -54,24 +62,29 @@ public:
 
 	inline int						GetWindowWidth() const { return mWindow_width; }
 	inline int						GetWindowHeight() const { return mWindow_height; }
+	inline int						GetWindowHalfWidth() const { return mWindow_halfWidth; }
+	inline int						GetWindowHalfHeight() const { return mWindow_halfHeight; }
 
 	const EGameStatus				GetGameStatus() const { return mGameStatus; }
 	void							SetGameStatus(EGameStatus newGameStatus) { mGameStatus = newGameStatus; }
 
-	void							AddActor(class Actor* ActorToAdd);
-	void							RemoveActor(class Actor* ActorToRemove);
+	void							AddActor(class AActor* ActorToAdd);
+	void							RemoveActor(class AActor* ActorToRemove);
 
-	void							AddObjectToKill(class Actor* actorToKill) { ActorsToKill.push_back(actorToKill); }
+	void							AddObjectToKill(class AActor* actorToKill) { ActorsToKill.push_back(actorToKill); }
 
 	void							KillActors();
+
+	static GameEngine				*GetGameEngine();
 
 	template<class T>
 	T* CreateActor(Vector2D ActorPosition, Vector2D ActorSize, string ObjectName)
 	{
-		Actor* NewActor = new T(this, ObjectName);
+		AActor* NewActor = new T();
+		NewActor->SetObjectName(ObjectName);
 
 		NewActor->SetActorPosition(ActorPosition);
-		NewActor->SetActorSize(ActorSize);
+		NewActor->SetActorScale(ActorSize);
 
 		NewActor->OnStartBeingPendingToKill += MakeDelegate(this, &GameEngine::AddObjectToKill);
 
@@ -100,12 +113,17 @@ protected:
     int								mWindow_width;
     int								mWindow_height;
 
-    vector<class Actor *>			mActors;
-	vector<class Actor*>			mNewActors;
-	vector<class Actor*>			ActorsToKill;
+	int								mWindow_halfWidth;
+	int								mWindow_halfHeight;
+
+    vector<class AActor *>			mActors;
+	vector<class AActor*>			mNewActors;
+	vector<class AActor*>			ActorsToKill;
 
 	class CollisionManager			*mCollisionManager = nullptr;
 	class RenderManager				*mRenderManager = nullptr;
 	class InputManager				*mInputManager = nullptr;
 	class AssetsManagerUtils		*mAssetsManagerUtils = nullptr;
+
+	static GameEngine				*thisGameEngine;
 };

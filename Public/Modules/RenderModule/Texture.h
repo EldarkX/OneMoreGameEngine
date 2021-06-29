@@ -9,6 +9,7 @@ class Texture
 public:
 
 	Texture() {};
+	Texture(const std::string& path);
 
 	bool			Load(const std::string& path);
 	void			Unload();
@@ -22,9 +23,9 @@ public:
 
 private:
 
-	unsigned int	mTextureID;
+	unsigned int	mTextureID = 0;
 
-	int				mWidth;
-	int				mHeight;
+	int				mWidth = 0;
+	int				mHeight = 0;
 
 };

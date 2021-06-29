@@ -15,15 +15,15 @@ public:
 
 	void							SwitchBuffers();
 
-	void							AddDrawableComponent(class SpriteComponent *);
+	void							AddDrawableComponent(class CSpriteComponent *);
 
-	void							RemoveDrawableComponent(class SpriteComponent *);
+	void							RemoveDrawableComponent(class CSpriteComponent *);
 
 	Matrix4D						CreateSimpleViewProj(float width, float height);
 
 private:
 
-	vector<class SpriteComponent *>	mDrawableComponents;
+	vector<class CSpriteComponent *>	mDrawableComponents;
 
 	class VertexArray				*mSpriteVerts;
 	class Shader					*mSpriteShader;

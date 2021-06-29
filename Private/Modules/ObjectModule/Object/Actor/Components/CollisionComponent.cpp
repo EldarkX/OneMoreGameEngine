@@ -4,19 +4,47 @@
 #include "Modules/CoreModule/CollisionManager.h"
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-void CollisionComponent::TriggerCollision(class Actor* AnotherActor, CollisionComponent* AnotherCollisionComponent)
+void CCollisionComponent::TriggerCollision(class AActor* AnotherActor, CCollisionComponent* AnotherCollisionComponent)
 {
 	OnComponentCollided(AnotherActor, AnotherCollisionComponent);
 }
 
-void CollisionComponent::Destroy()
+void CCollisionComponent::Destroy()
 {
-	mOwner->GetGameEngine()->GetCollisionManager()->RemoveAgent(this);
+	GameEngine::GetGameEngine()->GetCollisionManager()->RemoveAgent(this);
 
-	BaseComponent::Destroy();
+	CBaseComponent::Destroy();
 }
 
-void CollisionComponent::BeginPlay()
+void CCollisionComponent::BeginPlay()
 {
-	mOwner->GetGameEngine()->GetCollisionManager()->AddAgent(this);
+	GameEngine::GetGameEngine()->GetCollisionManager()->AddAgent(this);
+}
+
+void CCollisionComponent::SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionType newResponse)
+{
+	mCollisionResponses->at(CollisionChannel) = newResponse;
+}
+
+void CCollisionComponent::SetCollisionResponseToAllChannels(ECollisionType newResponse)
+{
+	for (auto &ResponseToChannel : *mCollisionResponses)
+	{
+		ResponseToChannel.second = newResponse;
+	}
+}
+
+bool CCollisionComponent::CanCollidedWith(CCollisionComponent* otherComp)
+{
+	return otherComp->GetCollisionResponses()->find(mCollisionChannel)->second == ECollisionType::CTE_Collide;
+}
+
+bool CCollisionComponent::IsCollisionEnabled()
+{
+	for (const auto &ResponseToChannel : *mCollisionResponses)
+	{
+		if (ResponseToChannel.second == ECollisionType::CTE_Collide)
+			return true;
+	}
+	return false;
 }

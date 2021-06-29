@@ -4,7 +4,7 @@
 
 class Texture;
 
-class SpriteComponent : public BaseComponent
+class CSpriteComponent : public CBaseComponent
 {
 	friend class	RenderManager;
 

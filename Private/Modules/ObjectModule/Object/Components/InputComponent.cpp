@@ -4,24 +4,24 @@
 #include "Modules/CoreModule/InputManager.h"
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-void InputComponent::BeginPlay()
+void CInputComponent::BeginPlay()
 {
-	mOwner->GetGameEngine()->GetInputManager()->AddInputComponent(this);
+	GameEngine::GetGameEngine()->GetInputManager()->AddInputComponent(this);
 }
 
-void InputComponent::ProccessInput(const SDL_Event* event)
+void CInputComponent::ProccessInput(const SDL_Event* event)
 {
 	if (event->type == SDL_QUIT || event->key.keysym.sym == SDL_KeyCode::SDLK_ESCAPE)
 	{
-		mOwner->GetGameEngine()->SetGameStatus(EGameStatus::GSE_Exit);
+		GameEngine::GetGameEngine()->SetGameStatus(EGameStatus::GSE_Exit);
 	}
 }
 
-void InputComponent::Destroy()
+void CInputComponent::Destroy()
 {
-	mOwner->GetGameEngine()->GetInputManager()->RemoveInputComponent(this);
+	GameEngine::GetGameEngine()->GetInputManager()->RemoveInputComponent(this);
 
-	BaseComponent::Destroy();
+	CBaseComponent::Destroy();
 }
 
 

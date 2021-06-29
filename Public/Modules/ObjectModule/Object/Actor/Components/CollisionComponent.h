@@ -2,23 +2,42 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-class CollisionComponent : public BaseComponent
+class CCollisionComponent;
+
+class CCollisionComponent : public CBaseComponent
 {
 
 public:
 
-	virtual void					BeginPlay() override;
+	virtual void								BeginPlay() override;
 
-	ECollisionType					GetCollisionType() const { return mCollisionType; }
-	void							SetCollisionType(ECollisionType newCollisionType) { mCollisionType = newCollisionType; }
+	ECollisionChannel							GetCollisionChannel() const { return mCollisionChannel; }
+	void										SetCollisionChannel(ECollisionChannel newChannel) { mCollisionChannel = newChannel; }
 
-	void							TriggerCollision(class Actor *AnotherActor, CollisionComponent *AnotherCollisionComponent);
-	MulticastDelegate2<class Actor*, CollisionComponent*> OnComponentCollided;
+	std::map<ECollisionChannel, ECollisionType>* GetCollisionResponses() const { return mCollisionResponses; }
+	void										SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionType newResponse);
+	void										SetCollisionResponseToAllChannels(ECollisionType newResponse);
+	bool										CanCollidedWith(CCollisionComponent* otherComp);
+	bool										IsCollisionEnabled();
 
-	virtual void					Destroy() override;
+	void										TriggerCollision(class AActor* AnotherActor, CCollisionComponent* AnotherCollisionComponent);
+
+	virtual void								Destroy() override;
+
+	MulticastDelegate2<class AActor*, CCollisionComponent*> OnComponentCollided;
 
 private:
 
-	ECollisionType					mCollisionType;
+	std::map<ECollisionChannel, ECollisionType>* mCollisionResponses = new std::map<ECollisionChannel, ECollisionType>
+	{
+		{ECollisionChannel::CCE_StaticObject1, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_StaticObject2, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_StaticObject3, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_DynamicObject1, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_DynamicObject2, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_DynamicObject3, ECollisionType::CTE_Ignore},
+		{ECollisionChannel::CCE_Player, ECollisionType::CTE_Ignore}
+	};
 
+	ECollisionChannel							mCollisionChannel = ECollisionChannel::CCE_StaticObject1;
 };

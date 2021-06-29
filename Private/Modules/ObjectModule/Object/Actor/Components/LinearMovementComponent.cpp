@@ -3,23 +3,23 @@
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
 
-void LinearMovementComponent::Tick(float deltaTime)
+void CLinearMovementComponent::Tick(float deltaTime)
 {
 	Movement(deltaTime);
 }
 
-void LinearMovementComponent::Movement(float deltaTime)
+void CLinearMovementComponent::Movement(float deltaTime)
 {
 	GetOwner()->SetActorPosition(GetOwner()->GetActorPosition() +
 		Vector2D(mVelocity * mSpeed * deltaTime));
 }
 
-void LinearMovementComponent::SetSpeed(float newSpeed)
+void CLinearMovementComponent::SetSpeed(float newSpeed)
 {
-	mSpeed = newSpeed;
+	mSpeed = std::clamp(newSpeed, 100.f, 1000.f);
 }
 
-void LinearMovementComponent::SetVelocity(Vector2D newVelocity)
+void CLinearMovementComponent::SetVelocity(Vector2D newVelocity)
 {
 	mVelocity = newVelocity;
 

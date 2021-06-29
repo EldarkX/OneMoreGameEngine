@@ -1,16 +1,16 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-void BaseComponent::Tick(float deltaTime)
+void CBaseComponent::Tick(float deltaTime)
 {
 }
 
-void BaseComponent::BeginPlay()
+void CBaseComponent::BeginPlay()
 {
 	
 }
 
-void BaseComponent::Destroy()
+void CBaseComponent::Destroy()
 {
-	Object::Destroy();
+	OObject::Destroy();
 }

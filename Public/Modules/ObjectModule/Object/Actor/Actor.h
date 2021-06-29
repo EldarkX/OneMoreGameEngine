@@ -6,38 +6,38 @@
 
 #include <algorithm>
 
-class Actor : public Object
+class AActor : public OObject
 {
 
 public:
 
-	Actor(GameEngine* gameEngine, string ObjectName);
+	AActor();
 
 	virtual void					BeginPlay() override;
 
     virtual void					Tick(float deltaTime) override;
 
-	class Transform2DComponent		*GetActorTransform() const { return mTransformComponent; }
+	class CTransform2DComponent		*GetActorTransform() const { return mTransformComponent; }
 
 	Vector2D						GetActorPosition() const { return mTransformComponent->GetPosition(); }
-	Vector2D						GetActorSize() const { return mTransformComponent->GetSize(); }
+	Vector2D						GetActorScale() const { return mTransformComponent->GetScale(); }
+
+	virtual Vector2D				GetActorSize() const { return GetActorScale(); }
 
 	void							SetActorPosition(Vector2D newPosition) { mTransformComponent->SetPosition(newPosition); }
-	void							SetActorSize(Vector2D newSize) { mTransformComponent->SetSize(newSize); }
-
-	class GameEngine				*GetGameEngine() const { return mGameEngine; }
+	void							SetActorScale(Vector2D newScale) { mTransformComponent->SetScale(newScale); }
 
 	bool							GetIsPendingToKill() const { return mIsPendingToKill; }
 	void							SetIsPendingToKill(bool newIsPendingToKill);
 
-	vector<class BaseComponent*>	GetComponents() const { return mComponents; }
+	vector<class CBaseComponent*>	GetComponents() const { return mComponents; }
 
-	MulticastDelegate1<Actor*>		OnStartBeingPendingToKill;
+	MulticastDelegate1<AActor*>		OnStartBeingPendingToKill;
 
 	template<class T>
 	T* AddComponent()
 	{
-		BaseComponent* NewComponent = new T();
+		CBaseComponent* NewComponent = new T();
 
 		NewComponent->SetOwner(this);
 
@@ -48,17 +48,15 @@ public:
 		return dynamic_cast<T *>(NewComponent);
 	}
 
-	void							RemoveComponent(class BaseComponent* Component);
+	void							RemoveComponent(class CBaseComponent* Component);
 
 	virtual void Destroy() override;
 
 protected:
 
-	class GameEngine				*mGameEngine;
+	vector<class CBaseComponent*>	mComponents;
 
-	vector<class BaseComponent*>	mComponents;
-
-	class Transform2DComponent		*mTransformComponent;
+	class CTransform2DComponent		*mTransformComponent;
 
 	bool			mIsPendingToKill = false;
 

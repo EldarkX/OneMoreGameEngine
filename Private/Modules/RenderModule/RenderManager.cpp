@@ -43,7 +43,12 @@ RenderManager::RenderManager(GameEngine* gameEngine)
 
 void RenderManager::DrawBackBuffer()
 {
-	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(
+		GL_SRC_ALPHA,          // srcFactor is srcAlpha
+		GL_ONE_MINUS_SRC_ALPHA // dstFactor is 1 - srcAlpha
+	);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -62,7 +67,7 @@ void RenderManager::SwitchBuffers()
 	SDL_GL_SwapWindow(mGameEngine->GetWindow());
 }
 
-void RenderManager::AddDrawableComponent(class SpriteComponent *NewSprite)
+void RenderManager::AddDrawableComponent(class CSpriteComponent *NewSprite)
 {
 	if (mDrawableComponents.empty())
 	{
@@ -82,7 +87,7 @@ void RenderManager::AddDrawableComponent(class SpriteComponent *NewSprite)
 	}
 }
 
-void RenderManager::RemoveDrawableComponent(class SpriteComponent *Sprite)
+void RenderManager::RemoveDrawableComponent(class CSpriteComponent *Sprite)
 {
 	mDrawableComponents.erase(find(mDrawableComponents.cbegin(), mDrawableComponents.cend(), Sprite));
 }

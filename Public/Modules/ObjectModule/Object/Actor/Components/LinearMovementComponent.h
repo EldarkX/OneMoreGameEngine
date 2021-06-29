@@ -2,7 +2,7 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-class LinearMovementComponent : public BaseComponent
+class CLinearMovementComponent : public CBaseComponent
 {
 
 public:
@@ -20,7 +20,7 @@ public:
 private:
 
 	float							mSpeed = 0;
-	Vector2D						mVelocity;
+	Vector2D						mVelocity = Vector2D::ZeroVector;
 
 };
 

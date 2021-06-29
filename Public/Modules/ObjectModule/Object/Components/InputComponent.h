@@ -2,7 +2,7 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-class InputComponent : public BaseComponent
+class CInputComponent : public CBaseComponent
 {
 
 public:

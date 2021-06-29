@@ -10,7 +10,7 @@ void BGComponent::SetTextures(const vector<SDL_Texture*>& Textures)
 	{
 		BGTexture newBGTexture;
 		newBGTexture.mTexture = text;
-		newBGTexture.mOffsetX = static_cast<float>(count * mOwner->GetGameEngine()->GetWindowWidth());
+		newBGTexture.mOffsetX = static_cast<float>(count * GameEngine::GetGameEngine()->GetWindowWidth());
 		mBGTextures.push_back(newBGTexture);
 		++count;
 	}
@@ -22,9 +22,9 @@ void BGComponent::Tick(float deltaTime)
 	{
 		bgText.mOffsetX += mScrollSpeed * deltaTime;
 
-		if (bgText.mOffsetX < -mOwner->GetGameEngine()->GetWindowWidth())
+		if (bgText.mOffsetX < -GameEngine::GetGameEngine()->GetWindowWidth())
 		{
-			bgText.mOffsetX = (static_cast<int>(mBGTextures.size()) - 1) * mOwner->GetGameEngine()->GetWindowWidth() - 1.f;
+			bgText.mOffsetX = (static_cast<int>(mBGTextures.size()) - 1) * GameEngine::GetGameEngine()->GetWindowWidth() - 1.f;
 		}
 	}
 	

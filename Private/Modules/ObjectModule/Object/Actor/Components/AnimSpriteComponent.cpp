@@ -2,8 +2,9 @@
 #include "Modules/ObjectModule/Object/Actor/Components/AnimSpriteComponent.h"
 
 #include "Modules/ObjectModule/Object/Actor/Actor.h"
+#include "Modules/RenderModule/Texture.h"
 
-void AnimSpriteComponent::PlayAnimation(string name, float playRate)
+void CAnimSpriteComponent::PlayAnimation(string name, float playRate)
 {
 	if (mAnimations.count(name))
 	{
@@ -13,7 +14,7 @@ void AnimSpriteComponent::PlayAnimation(string name, float playRate)
 		{
 			mCurrentAnimation.first = name;
 			mCurrentAnimation.second = AnimToSet;
-			mCurrentAnimFps = mCurrentAnimation.second->mAnimFps * playRate;
+			mCurrentAnimFps = static_cast<int>(mCurrentAnimation.second->mAnimFps * playRate);
 
 			mCurrentFrame = 0;
 
@@ -22,7 +23,7 @@ void AnimSpriteComponent::PlayAnimation(string name, float playRate)
 	}
 }
 
-void AnimSpriteComponent::Tick(float deltaTime)
+void CAnimSpriteComponent::Tick(float deltaTime)
 {
 	if (mCurrentAnimation.second)
 	{
@@ -42,11 +43,11 @@ void AnimSpriteComponent::Tick(float deltaTime)
 			}
 		}
 
-		//SetTexture(mCurrentAnimation.second->mTextures[static_cast<int>(mCurrentFrame)]);
+		SetTexture(mCurrentAnimation.second->mTextures[static_cast<int>(mCurrentFrame)]);
 	}
 }
 
-void AnimSpriteComponent::AddAnimation(string name, string path, unsigned int framesAmount,
+void CAnimSpriteComponent::AddAnimation(string name, string path, unsigned int framesAmount,
 	unsigned int animFPS /*= 24*/, unsigned int priority /*= 0*/, bool isLooping /*= false*/)
 {
 	string zero;
@@ -54,19 +55,18 @@ void AnimSpriteComponent::AddAnimation(string name, string path, unsigned int fr
 
 	Animation* newAnim = new Animation(animFPS, priority, isLooping);
 
-	//for (unsigned int i = 1; i <= framesAmount; ++i)
-	//{
-	//	zero = i < 10 ? "0" : "";
-	//	new_path = path + zero + std::to_string(i) + ".png";
-	//	newAnim->mTextures.push_back(IMG_LoadTexture(GetOwner()->GetGameEngine()->GetRenderer(), new_path.c_str()));
-	//}
+	for (unsigned int i = 1; i <= framesAmount; ++i)
+	{
+		new_path = path + std::to_string(i) + ".png";
+		newAnim->mTextures.push_back(new Texture(new_path.c_str()));
+	}
 
 	newAnim->mTexturesAmount = newAnim->mTextures.size();
 
 	mAnimations[name] = newAnim;
 }
 
-void AnimSpriteComponent::SetBaseAnimation(string name)
+void CAnimSpriteComponent::SetBaseAnimation(string name)
 {
 	if (!mAnimations.count(name))
 	{
@@ -80,7 +80,7 @@ void AnimSpriteComponent::SetBaseAnimation(string name)
 	mCurrentAnimation.second = mAnimations[mBaseAnimation];
 }
 
-void AnimSpriteComponent::BeginPlay()
+void CAnimSpriteComponent::BeginPlay()
 {
-	SpriteComponent::BeginPlay();
+	CSpriteComponent::BeginPlay();
 }

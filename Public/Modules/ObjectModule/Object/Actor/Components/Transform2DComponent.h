@@ -5,17 +5,17 @@
 
 #include "Modules/ObjectModule/Object/Components/BaseComponent.h"
 
-class Transform2DComponent : public BaseComponent
+class CTransform2DComponent : public CBaseComponent
 {
 
 public:
 
 	void		SetPosition(Vector2D newPosition);
-	void		SetSize(Vector2D newSize);
+	void		SetScale(Vector2D newScale);
 	void		SetAngle(float newRotationAngle);
 
 	Vector2D	GetPosition() const { return mPosition; }
-	Vector2D	GetSize() const { return mSize; }
+	Vector2D	GetScale() const { return mScale; }
 	float		GetAngle() const { return mRotationAngle; }
 
 	virtual void BeginPlay() override;
@@ -33,6 +33,6 @@ private:
 	Matrix4D	mTransfromScale;
 
 	Vector2D	mPosition;
-	Vector2D	mSize;
-	float		mRotationAngle;
+	Vector2D	mScale = Vector2D::UnitVector;
+	float		mRotationAngle = 0;
 };

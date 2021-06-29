@@ -1,11 +1,20 @@
 #pragma once
 
+enum class ECollisionChannel
+{
+	CCE_StaticObject1,
+	CCE_StaticObject2,
+	CCE_StaticObject3,
+	CCE_DynamicObject1,
+	CCE_DynamicObject2,
+	CCE_DynamicObject3,
+	CCE_Player
+};
+
 enum class ECollisionType
 {
-	CTE_Wall,
-	CTE_Block,
-	CTE_Player,
-	CTE_Ball
+	CTE_Ignore,
+	CTE_Collide
 };
 
 enum class EGameStatus

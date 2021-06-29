@@ -28,6 +28,10 @@ public:
 	inline float&Y() { return y_; }
 	inline float Y() const { return y_; }
 
+	/*static*/
+	static const Vector2D UnitVector;
+	static const Vector2D ZeroVector;
+
 protected:
 
     float x_ = 0;

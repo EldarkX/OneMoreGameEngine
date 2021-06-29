@@ -2,14 +2,15 @@
 
 #include "Modules/CoreModule/GameEngine.h"
 
-class Object
+class OObject
 {
 
 public:
 
-	Object(string ObjectName = "UNKNOWN");
+	OObject();
 
 	virtual	void				BeginPlay();
+
 
 	virtual void				Tick(float deltaTime);
 
@@ -18,7 +19,7 @@ public:
 
 	virtual void				Destroy();
 
-	MulticastDelegate1<Object*> OnDestroyed;
+	MulticastDelegate1<OObject*> OnDestroyed;
 
 protected:
 

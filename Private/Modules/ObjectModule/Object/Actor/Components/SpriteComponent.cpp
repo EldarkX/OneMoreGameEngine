@@ -6,35 +6,38 @@
 #include "Modules/RenderModule/Shader.h"
 #include "Modules/RenderModule/Texture.h"
 
-void SpriteComponent::Destroy()
+void CSpriteComponent::Destroy()
 {
-	GetOwner()->GetGameEngine()->GetRenderManager()->RemoveDrawableComponent(this);
+	GameEngine::GetGameEngine()->GetRenderManager()->RemoveDrawableComponent(this);
 
-	BaseComponent::Destroy();
+	CBaseComponent::Destroy();
 }
 
-void SpriteComponent::BeginPlay()
+void CSpriteComponent::BeginPlay()
 {
-	GetOwner()->GetGameEngine()->GetRenderManager()->AddDrawableComponent(this);
+	GameEngine::GetGameEngine()->GetRenderManager()->AddDrawableComponent(this);
 }
 
-void SpriteComponent::SetTexture(Texture* newTexture)
+void CSpriteComponent::SetTexture(Texture* newTexture)
 {
 	mTexture = newTexture;
 }
 
-void SpriteComponent::Draw(Shader* shader)
+void CSpriteComponent::Draw(Shader* shader)
 {
-	Matrix4D scale = Matrix4D::OneMatrix();
-	scale[0][0] = static_cast<float>(60);
-	scale[1][1] = static_cast<float>(60);
+	if (GetTexture())
+	{
+		Matrix4D scale = Matrix4D::OneMatrix();
+		scale[0][0] = static_cast<float>(GetTexture()->GetWidth());
+		scale[1][1] = static_cast<float>(GetTexture()->GetHeight());
 
-	if (mTexture)
-		mTexture->SetActive();
+		if (mTexture)
+			mTexture->SetActive();
 
-	Matrix4D world = scale * mOwner->GetActorTransform()->GetComputedTransform();
+		Matrix4D world = scale * mOwner->GetActorTransform()->GetComputedTransform();
 
-	shader->SetMatrixUniform("uWorldTransform", world);
+		shader->SetMatrixUniform("uWorldTransform", world);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	}
 }

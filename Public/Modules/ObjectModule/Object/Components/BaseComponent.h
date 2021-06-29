@@ -2,15 +2,15 @@
 
 #include "Modules/ObjectModule/Object.h"
 
-class BaseComponent : public Object
+class CBaseComponent : public OObject
 {
 
 public:
 
 	virtual void	Tick(float deltaTime) override;
 
-	class Actor		*GetOwner() const { return mOwner; }
-	void			SetOwner(class Actor *newOwner) { mOwner = newOwner; }
+	class AActor	*GetOwner() const { return mOwner; }
+	void			SetOwner(class AActor *newOwner) { mOwner = newOwner; }
 
 
 	virtual void	BeginPlay() override;
@@ -20,6 +20,6 @@ public:
 
 protected:
 
-	class Actor		*mOwner;
+	class AActor		*mOwner;
 
 };

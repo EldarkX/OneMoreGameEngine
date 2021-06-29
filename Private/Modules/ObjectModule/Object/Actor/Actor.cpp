@@ -5,14 +5,13 @@
 
 #include <algorithm>
 
-Actor::Actor(GameEngine* gameEngine, string ObjectName)
-	: Object(ObjectName), mGameEngine(gameEngine)
+AActor::AActor()
 {
-	mTransformComponent = AddComponent<Transform2DComponent>();
+	mTransformComponent = AddComponent<CTransform2DComponent>();
 }
 
 
-void Actor::Tick(float deltaTime)
+void AActor::Tick(float deltaTime)
 {
 	for (auto Comp : mComponents)
 	{
@@ -20,14 +19,14 @@ void Actor::Tick(float deltaTime)
 	}
 }
 
-void Actor::RemoveComponent(BaseComponent* Component)
+void AActor::RemoveComponent(CBaseComponent* Component)
 {
 	mComponents.erase(find(mComponents.cbegin(), mComponents.cend(), Component));
 
 	Component->Destroy();
 }
 
-void Actor::SetIsPendingToKill(bool newIsPendingToKill)
+void AActor::SetIsPendingToKill(bool newIsPendingToKill)
 {
 	mIsPendingToKill = newIsPendingToKill;
 
@@ -37,17 +36,17 @@ void Actor::SetIsPendingToKill(bool newIsPendingToKill)
 	}
 }
 
-void Actor::Destroy()
+void AActor::Destroy()
 {
 	while (!mComponents.empty())
 	{
 		RemoveComponent(mComponents.back());
 	}
 
-	Object::Destroy();
+	OObject::Destroy();
 }
 
-void Actor::BeginPlay()
+void AActor::BeginPlay()
 {
 
 }

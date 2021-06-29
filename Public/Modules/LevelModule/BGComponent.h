@@ -2,7 +2,7 @@
 
 #include "Modules/ObjectModule/Object/Actor/Components/SpriteComponent.h"
 
-class BGComponent : public SpriteComponent
+class BGComponent : public CSpriteComponent
 {
 
 public:

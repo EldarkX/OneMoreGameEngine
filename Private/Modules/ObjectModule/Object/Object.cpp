@@ -1,21 +1,21 @@
 #include "Modules/ObjectModule/Object.h"
 
-Object::Object(string ObjectName) : mObjectName(ObjectName)
+OObject::OObject()
 {
 
 }
 
-void Object::BeginPlay()
+void OObject::BeginPlay()
 {
 
 }
 
-void Object::Tick(float deltaTime)
+void OObject::Tick(float deltaTime)
 {
 
 }
 
-void Object::Destroy()
+void OObject::Destroy()
 {
 	OnDestroyed(this);
 

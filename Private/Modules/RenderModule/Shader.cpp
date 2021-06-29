@@ -32,7 +32,7 @@ void Shader::SetMatrixUniform(const char* paramName, const Matrix4D& paramValue)
 		for (int j = 0; j < 4; ++j, ++k)
 			array[k] = paramValue[i][j];
 
-	glUniformMatrix4fv(loc, 1, GL_TRUE, array);//paramValue.GetAsFloatPtr());
+	glUniformMatrix4fv(loc, 1, GL_TRUE, array);
 }
 
 void Shader::SetActive()

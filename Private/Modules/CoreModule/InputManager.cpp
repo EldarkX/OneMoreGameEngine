@@ -10,12 +10,12 @@ void    InputManager::HandleInput(const SDL_Event *event)
 	}
 }
 
-void InputManager::AddInputComponent(class InputComponent *Input)
+void InputManager::AddInputComponent(CInputComponent *Input)
 {
 	mInputComponents.push_back(Input);
 }
 
-void InputManager::RemoveInputComponent(class InputComponent* Input)
+void InputManager::RemoveInputComponent(CInputComponent* Input)
 {
 	mInputComponents.erase(find(mInputComponents.cbegin(), mInputComponents.cend(), Input));
 }

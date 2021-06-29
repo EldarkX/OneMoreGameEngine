@@ -1,26 +1,28 @@
 
 #include "Modules/RenderModule/Texture.h"
 
+Texture::Texture(const std::string& path)
+{
+	Load(path);
+}
+
 bool Texture::Load(const std::string& path)
 {
-	int channels = 0;
-
-	unsigned char* image = SOIL_load_image(path.c_str(), &mWidth, &mHeight, &channels, SOIL_LOAD_AUTO);
-
-	if (!image)
+	SDL_Surface* Image;
+	Image = IMG_Load(path.c_str());
+	if (!Image)
 	{
-		SDL_Log("Texture::Load: SOIL failed to load image %s : %s", path.c_str(), SOIL_last_result());
+		SDL_Log("Texture::Load: SOIL failed to load image %s", path.c_str());
 		return false;
 	}
-
-	int format = channels == 4 ? GL_RGBA : GL_RGB;
-
 	glGenTextures(1, &mTextureID);
-	SetActive();
-
-	glTexImage2D(GL_TEXTURE_2D, 0, format, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, image);
-
-	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, mTextureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image->w, Image->h, 0, Image->format->format, GL_UNSIGNED_BYTE, Image->pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	mWidth = Image->w;
+	mHeight = Image->h;
+	SDL_FreeSurface(Image);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
